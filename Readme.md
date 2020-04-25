@@ -1,7 +1,7 @@
 # Личный проект «TaskForce»
 
 * Студент: [Елена Тыщенко](https://up.htmlacademy.ru/yii/1/user/504901).
-* Наставник: `Неизвестно`.
+* Наставник: [Максим Деев](https://htmlacademy.ru/profile/id685777).
 
 ---
 
