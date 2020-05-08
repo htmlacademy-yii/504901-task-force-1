@@ -1,5 +1,5 @@
 <?php
-
+namespace taskForce\models;
 class Task
 {
     const STATUS_NEW = 'new';
