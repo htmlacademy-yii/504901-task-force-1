@@ -1,6 +1,6 @@
 <?php
-require_once('Task.php');
-
+require_once('vendor/autoload.php');
+use taskForce\models\Task;
 $task = new Task(1,1);
 assert($task->id_customer == 1 && $task->id_executor == 1);
 $task1 = new Task(1);
@@ -33,3 +33,4 @@ assert($task->get_available_actions(Task::STATUS_CANCELED) == []);
 assert($task->get_available_actions(Task::STATUS_PERFORMED) == []);
 assert($task->get_available_actions(Task::STATUS_FAILED) == []);
 assert($task->get_available_actions(Task::STATUS_IN_WORK) == [Task::ACTION_FAIL, Task::ACTION_PERFORM]);
+

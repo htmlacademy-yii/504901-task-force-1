@@ -1,0 +1,16 @@
+{
+    "name": "dns/504901-task-force-1",
+    "authors": [
+        {
+            "name": "Tyshchenko Elena",
+            "email": "tyshenko61@mail.ru"
+        }
+    ],
+    "require": {},
+    "autoload": {
+      "psr-4": {
+        "taskForce\\": "src/"
+      }
+    }
+
+}
