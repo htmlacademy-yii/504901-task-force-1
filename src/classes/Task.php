@@ -3,6 +3,8 @@
 namespace taskForce\classes;
 
 
+use taskForce\ex\CheckParamException;
+
 class Task
 {
     const STATUS_NEW = 'new';
@@ -26,6 +28,7 @@ class Task
      * Получить статус после выполнения указанного действия
      * @param string $action Действие
      * @return string Статус
+     * @throws CheckParamException
      */
     public function getStatus(string $action): string
     {
@@ -54,7 +57,8 @@ class Task
                 if (FailAction::verify($this->idCustomer, $this->idExecutor, $this->idCurrentUser)) {
                     return self::STATUS_FAILED;
                 }
-
+            default:
+                throw new CheckParamException("Нет такого действия");
         }
         return $this->currentStatus;
     }
@@ -93,9 +97,13 @@ class Task
      * Получить доступные действия
      * @param string $status Статус
      * @return array массив действий
+     * @throws CheckParamException
      */
     public function getAvailableActions(string $status): array
     {
+        if (!array_key_exists($status, self::mapStatus())) {
+            throw new CheckParamException("Нет такого статуса");
+        }
         switch ($status) {
             case self::STATUS_NEW :
                 return [CancelAction::ACTION_CANCEL, SelectAction::ACTION_ARTIST_SELECTION];
@@ -104,6 +112,5 @@ class Task
         }
         return [];
     }
-
 }
 
