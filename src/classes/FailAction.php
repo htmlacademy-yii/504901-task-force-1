@@ -8,14 +8,16 @@ class FailAction extends AbstractAction
 {
 
     const ACTION_FAIL = 'fail';
+    const ACTION_FAIL_TITLE = 'Отказ от выполнения';
 
     /**
      * Возврат названия
-     * @return string Имя класса
+     * @return string Название действия
      */
     static function getTitle(): string
     {
-        return __CLASS__;
+
+        return self::ACTION_FAIL_TITLE;
     }
 
     /**
@@ -24,6 +26,7 @@ class FailAction extends AbstractAction
      */
     static function getName(): string
     {
+
         return self::ACTION_FAIL;
     }
 
@@ -36,6 +39,7 @@ class FailAction extends AbstractAction
      */
     static function verify(int $id_customer, int $id_executor, int $id_user): bool
     {
+
         return $id_user === $id_executor;
     }
 }

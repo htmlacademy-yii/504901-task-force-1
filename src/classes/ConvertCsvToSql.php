@@ -3,10 +3,10 @@
 
 namespace taskForce\classes;
 
-use taskForce\ex\FileFormatException;
-use taskForce\ex\SourceFileException;
-use taskForce\utils\DataImporterGenerator;
-use taskForce\utils\DataWriter;
+use taskForce\exception\FileFormatException;
+use taskForce\exception\SourceFileException;
+use taskForce\utils\FileReader;
+use taskForce\utils\FileWriter;
 
 class ConvertCsvToSql
 {
@@ -19,13 +19,15 @@ class ConvertCsvToSql
      */
     static function createSql(string $fileName, array $columns, string $tableName)
     {
-        $loader = new DataImporterGenerator($fileName, $columns);
-        $loader->import();
+        $loader = new FileReader($fileName, $columns);
+        $loader->checkFile();
+        $loader->readFile();
         $records = $loader->getData();
         $sqlFileName = preg_replace('/csv$/', 'sql', $fileName);
-        $writer = new DataWriter($sqlFileName, $columns, $tableName);
+        $writer = new FileWriter($sqlFileName, $columns, $tableName);
         $writer->writeFile($records);
         print("Файл " . $sqlFileName . " успешно создан");
         print("<br>");
+
     }
 }

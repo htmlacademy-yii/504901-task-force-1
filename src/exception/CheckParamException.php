@@ -1,5 +1,5 @@
 <?php
-namespace taskForce\ex;
+namespace taskForce\exception;
 
 class CheckParamException extends \Exception
 {

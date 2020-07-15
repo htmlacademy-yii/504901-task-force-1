@@ -7,14 +7,16 @@ namespace taskForce\classes;
 class CancelAction extends AbstractAction
 {
     const ACTION_CANCEL = 'cancel';
+    const ACTION_CANCEL_TITLE = 'Отмена';
 
     /**
      * Возврат названия
-     * @return string Имя класса
+     * @return string Название действия
      */
     static function getTitle(): string
     {
-        return __CLASS__;
+
+        return self::ACTION_CANCEL_TITLE;
     }
 
     /**
@@ -23,6 +25,7 @@ class CancelAction extends AbstractAction
      */
     static function getName(): string
     {
+
         return self::ACTION_CANCEL;
     }
 
@@ -35,6 +38,7 @@ class CancelAction extends AbstractAction
      */
     static function verify(int $id_customer, int $id_executor, int $id_user): bool
     {
+
         return $id_user === $id_customer;
     }
 }

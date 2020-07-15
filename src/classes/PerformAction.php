@@ -7,14 +7,16 @@ namespace taskForce\classes;
 class PerformAction extends AbstractAction
 {
     const ACTION_PERFORM = 'perform';
+    const ACTION_PERFORM_TITLE = 'Завершить';
 
     /**
      * Возврат названия
-     * @return string Имя класса
+     * @return string Название действия
      */
     static function getTitle(): string
     {
-        return __CLASS__;
+
+        return self::ACTION_PERFORM_TITLE;
     }
 
     /**
@@ -23,6 +25,7 @@ class PerformAction extends AbstractAction
      */
     static function getName(): string
     {
+
         return self::ACTION_PERFORM;
     }
 
@@ -35,6 +38,7 @@ class PerformAction extends AbstractAction
      */
     static function verify(int $id_customer, int $id_executor, int $id_user): bool
     {
+
         return $id_user === $id_customer;
     }
 }

@@ -3,17 +3,13 @@
 
 namespace taskForce\utils;
 
+use taskForce\exception\SourceFileException;
 
-use taskForce\ex\FileFormatException;
-use taskForce\ex\SourceFileException;
-
-class DataWriter
+class FileWriter
 {
     private $filename;
     private $columns;
     private $tableName;
-    private $fp;
-    private $result = [];
 
     /**
      * DataWrite constructor.
@@ -26,6 +22,7 @@ class DataWriter
         $this->filename = $filename;
         $this->columns = $columns;
         $this->tableName = $tableName;
+
     }
 
     /**
@@ -35,14 +32,11 @@ class DataWriter
      */
     public function writeFile(array $data): void
     {
-        $this->fp = fopen($this->filename, 'w');
-        if (!$this->fp) {
+        $fp = fopen($this->filename, 'w');
+        if (!$fp) {
             throw new SourceFileException("Не удалось открыть файл на чтение");
         }
         $text = "INSERT INTO " . $this->tableName . " (" . implode(", ", $this->columns) . ") VALUES";
-        foreach ($data as $row) {
-
-        }
         foreach ($data as $row) {
             if (is_array($row)) {
                 $text .= "\n(";
@@ -56,40 +50,7 @@ class DataWriter
             }
         }
         $text = substr($text, 0, strlen($text) - 1) . ";";
-        fwrite($this->fp, $text);
-    }
+        fwrite($fp, $text);
 
-    public function getData(): array
-    {
-        return $this->result;
-    }
-
-    private function getHeaderData(): ?array
-    {
-        rewind($this->fp);
-        return fgetcsv($this->fp);
-    }
-
-    /* private function getNextLine(): ?iterable
-     {
-         foreach () {
-             yield fgetcsv($this->fp);
-         }
-         return null;
-     }*/
-
-    private function validateColumns(array $columns): bool
-    {
-        $result = true;
-        if (count($columns)) {
-            foreach ($columns as $column) {
-                if (!is_string($column)) {
-                    $result = false;
-                }
-            }
-        } else {
-            $result = false;
-        }
-        return $result;
     }
 }

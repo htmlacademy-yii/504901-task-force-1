@@ -2,8 +2,8 @@
 require_once('vendor/autoload.php');
 
 use taskForce\classes\ConvertCsvToSql;
-use taskForce\ex\FileFormatException;
-use taskForce\ex\SourceFileException;
+use taskForce\exception\FileFormatException;
+use taskForce\exception\SourceFileException;
 
 try {
     ConvertCsvToSql::createSql(__DIR__ . '/data/users.csv',
@@ -22,25 +22,25 @@ try {
         ['id_status', 'id_role'],
         'status_role');
     ConvertCsvToSql::createSql(__DIR__ . '/data/profiles.csv',
-        ['id_user','address','birthday','about','phone','skype','id_role','id_city'],
+        ['id_user', 'address', 'birthday', 'about', 'phone', 'skype', 'id_role', 'id_city'],
         'profiles');
     ConvertCsvToSql::createSql(__DIR__ . '/data/categories.csv',
-        ['name','icon'],
+        ['name', 'icon'],
         'categories');
     ConvertCsvToSql::createSql(__DIR__ . '/data/specializations.csv',
-        ['id_user','id_category'],
+        ['id_user', 'id_category'],
         'specializations');
     ConvertCsvToSql::createSql(__DIR__ . '/data/tasks.csv',
-        ['date_of_creation','id_category','description','date_of_completion','name_task','address','budget','latitude','longitude','id_owner','id_status'],
+        ['date_of_creation', 'id_category', 'description', 'date_of_completion', 'name_task', 'address', 'budget', 'latitude', 'longitude', 'id_owner', 'id_status'],
         'tasks');
     ConvertCsvToSql::createSql(__DIR__ . '/data/executor_tasks.csv',
-        ['id_task','date_of_appointment','id_executor'],
+        ['id_task', 'date_of_appointment', 'id_executor'],
         'executor_tasks');
     ConvertCsvToSql::createSql(__DIR__ . '/data/opinions.csv',
-        ['date_add','mark','comment','id_task'],
+        ['date_add', 'mark', 'comment', 'id_task'],
         'reviews');
     ConvertCsvToSql::createSql(__DIR__ . '/data/replies.csv',
-        ['date_add','mark','message','id_task','id_user'],
+        ['date_add', 'mark', 'message', 'id_task', 'id_user'],
         'responses');
 } catch (SourceFileException $e) {
     error_log("Не удалось обработать csv файл: " . $e->getMessage());
@@ -50,7 +50,4 @@ try {
     print("Неверная форма файла импорта: " . $e->getMessage());
 }
 
-
-
-//var_dump($records);
 

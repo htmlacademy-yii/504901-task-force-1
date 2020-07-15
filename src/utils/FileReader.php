@@ -2,10 +2,10 @@
 
 namespace taskForce\utils;
 
-use taskForce\ex\FileFormatException;
-use taskForce\ex\SourceFileException;
+use taskForce\exception\FileFormatException;
+use taskForce\exception\SourceFileException;
 
-class DataImporterGenerator
+class FileReader
 {
     private $filename;
     private $columns;
@@ -21,14 +21,14 @@ class DataImporterGenerator
     {
         $this->filename = $filename;
         $this->columns = $columns;
+
     }
 
-    /**
-     * Чтение данных
+    /** Формирование исключений
      * @throws FileFormatException
      * @throws SourceFileException
      */
-    public function import(): void
+    public function checkFile()
     {
         if (!$this->validateColumns($this->columns)) {
             throw new FileFormatException("Заданы неверные заголовки столбцов");
@@ -41,32 +41,31 @@ class DataImporterGenerator
             throw new SourceFileException("Не удалось открыть файл на чтение");
         }
         $header_data = $this->getHeaderData();
-       /* print("<pre>");
-        var_dump($header_data);
-        print("</pre>");
-        print("<pre>");
-        var_dump($this->columns);
-        print("</pre>");*/
-        //print(implode(",",$header_data));
-        //print(implode(",",$this->columns));
         $diff = array_diff($header_data, $this->columns);
-//        print_r($diff);
         if ($diff) {
             throw new FileFormatException("Исходный файл не содержит необходимых столбцов");
         }
+
+    }
+
+    public function readFile(): void
+    {
         foreach ($this->getNextLine() as $line) {
             $this->result[] = $line;
         }
+
     }
 
     public function getData(): array
     {
+
         return $this->result;
     }
 
     private function getHeaderData(): ?array
     {
         rewind($this->fp);
+
         return fgetcsv($this->fp);
     }
 
@@ -75,6 +74,7 @@ class DataImporterGenerator
         while (!feof($this->fp)) {
             yield fgetcsv($this->fp);
         }
+
         return null;
     }
 
@@ -90,6 +90,7 @@ class DataImporterGenerator
         } else {
             $result = false;
         }
+
         return $result;
     }
 }
