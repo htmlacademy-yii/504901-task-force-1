@@ -8,14 +8,16 @@ class SelectAction extends AbstractAction
 {
 
     const ACTION_ARTIST_SELECTION = 'artist_selection';
+    const ACTION_SELECTION_TITLE = 'Выбор исполнителя';
 
     /**
      * Возврат названия
-     * @return string Имя класса
+     * @return string Название действия
      */
     static function getTitle(): string
     {
-        return __CLASS__;
+
+        return self::ACTION_SELECTION_TITLE;
     }
 
     /**
@@ -24,6 +26,7 @@ class SelectAction extends AbstractAction
      */
     static function getName(): string
     {
+
         return self::ACTION_ARTIST_SELECTION;
     }
 
@@ -36,6 +39,7 @@ class SelectAction extends AbstractAction
      */
     static function verify(int $id_customer, int $id_executor, int $id_user): bool
     {
+
         return $id_user === $id_customer;
     }
 }

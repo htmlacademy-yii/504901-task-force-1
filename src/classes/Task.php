@@ -3,7 +3,7 @@
 namespace taskForce\classes;
 
 
-use taskForce\ex\CheckParamException;
+use taskForce\exception\CheckParamException;
 
 class Task
 {
@@ -22,6 +22,7 @@ class Task
     {
         $this->idCustomer = $idCustomer;
         $this->idExecutor = $idExecutor;
+
     }
 
     /**
@@ -60,6 +61,7 @@ class Task
             default:
                 throw new CheckParamException("Нет такого действия");
         }
+
         return $this->currentStatus;
     }
 
@@ -69,6 +71,7 @@ class Task
      */
     public function mapStatus(): array
     {
+
         return [
             self::STATUS_NEW => "Новое",
             self::STATUS_CANCELED => "Отменено",
@@ -84,12 +87,13 @@ class Task
      */
     public function mapActions(): array
     {
+
         return [
-            PublishAction::getName() => "Опубликовать",
-            CancelAction::getName() => "Отмена",
-            SelectAction::getName() => "Выбор исполнителя",
-            PerformAction::getName() => "Завершить",
-            FailAction::getName() => "Отказ от выполнения"
+            PublishAction::getName() => PublishAction::getTitle(),
+            CancelAction::getName() => CancelAction::getTitle(),
+            SelectAction::getName() => SelectAction::getTitle(),
+            PerformAction::getName() => PerformAction::getTitle(),
+            FailAction::getName() => FailAction::getTitle()
         ];
     }
 
@@ -110,6 +114,7 @@ class Task
             case self::STATUS_IN_WORK :
                 return [FailAction::ACTION_FAIL, PerformAction::ACTION_PERFORM];
         }
+
         return [];
     }
 }

@@ -30,8 +30,9 @@ CREATE TABLE roles
 /* Статусы */
 CREATE TABLE statuses
 (
-    id_status INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name      VARCHAR(30)
+    id_status   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(30),
+    translation VARCHAR(30)
 );
 
 /* Статус-роль */
@@ -47,20 +48,21 @@ CREATE TABLE status_role
 /* Профили */
 CREATE TABLE profiles
 (
-    id_user      INT         NOT NULL PRIMARY KEY,
+    id_user      INT        NOT NULL PRIMARY KEY,
     avatar       VARCHAR(255),
     birthday     DATE,
-    id_role      INT         NOT NULL,
+    id_role      INT        NOT NULL,
     about        TEXT,
     phone        CHAR(11),
     skype        VARCHAR(50),
     telegram     VARCHAR(50),
-    id_city      INT         NOT NULL,
-    new_message  TINYINT(1)  NOT NULL DEFAULT 1,
-    actions      TINYINT(1)  NOT NULL DEFAULT 1,
-    new_review   TINYINT(1)  NOT NULL DEFAULT 1,
-    show_contact TINYINT(1)  NOT NULL DEFAULT 0,
-    show_profile TINYINT(1)  NOT NULL DEFAULT 0,
+    id_city      INT        NOT NULL,
+    address      VARCHAR(255),
+    new_message  TINYINT(1) NOT NULL DEFAULT 1,
+    actions      TINYINT(1) NOT NULL DEFAULT 1,
+    new_review   TINYINT(1) NOT NULL DEFAULT 1,
+    show_contact TINYINT(1) NOT NULL DEFAULT 0,
+    show_profile TINYINT(1) NOT NULL DEFAULT 0,
     FOREIGN KEY (id_city) REFERENCES cities (id_city),
     FOREIGN KEY (id_user) REFERENCES users (id_user),
     FOREIGN KEY (id_role) REFERENCES roles (id_role)
@@ -135,6 +137,8 @@ CREATE TABLE tasks
     description        TEXT         NOT NULL,
     date_of_completion DATE,
     budget             INT,
+    latitude  FLOAT,
+    longitude FLOAT,
     id_owner           INT          NOT NULL,
     FOREIGN KEY (id_status) REFERENCES statuses (id_status),
     FOREIGN KEY (id_owner) REFERENCES profiles (id_user)
@@ -191,7 +195,7 @@ CREATE TABLE responses
     id_user     INT       NOT NULL,
     mark        TINYINT(1),
     performed   TINYINT(1)         DEFAULT 0,
-    message     VARCHAR(255),
+    message     TEXT,
     FOREIGN KEY (id_user) REFERENCES profiles (id_user),
     FOREIGN KEY (id_task) REFERENCES tasks (id_task)
 );

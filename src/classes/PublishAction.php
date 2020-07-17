@@ -7,14 +7,16 @@ namespace taskForce\classes;
 class PublishAction extends AbstractAction
 {
     const ACTION_PUBLISH = 'publish';
+    const ACTION_PUBLISH_TITLE = 'Опубликовать';
 
     /**
      * Возврат названия
-     * @return string Имя класса
+     * @return string Название действия
      */
     static function getTitle(): string
     {
-        return __CLASS__;
+
+        return self::ACTION_PUBLISH_TITLE;
     }
 
     /**
@@ -23,6 +25,7 @@ class PublishAction extends AbstractAction
      */
     static function getName(): string
     {
+
         return self::ACTION_PUBLISH;
     }
 
@@ -35,6 +38,7 @@ class PublishAction extends AbstractAction
      */
     static function verify(int $id_customer, int $id_executor, int $id_user): bool
     {
+
         return $id_user === $id_customer;
     }
 }
