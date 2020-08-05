@@ -143,7 +143,8 @@ CREATE TABLE task
     id_owner           INT          NOT NULL,
     FOREIGN KEY (id_status) REFERENCES status (id_status),
     FOREIGN KEY (id_owner) REFERENCES profile (id_user),
-    FOREIGN KEY (id_city) REFERENCES city (id_city)
+    FOREIGN KEY (id_city) REFERENCES city (id_city),
+    FOREIGN KEY (id_category) REFERENCES category(id_category)
 );
 
 /* Исполнители заданий */

@@ -7,11 +7,11 @@ use Yii;
 /**
  * This is the model class for table "specialization".
  *
- * @property int $id_user
- * @property int $id_category
+ * @property int $id
+ * @property string $name
  *
- * @property Category $category
- * @property Profile $user
+ * @property ProfileSpecialization[] $profileSpecializations
+ * @property Profile[] $profiles
  */
 class Specialization extends \yii\db\ActiveRecord
 {
@@ -29,11 +29,9 @@ class Specialization extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_user', 'id_category'], 'required'],
-            [['id_user', 'id_category'], 'integer'],
-            [['id_user', 'id_category'], 'unique', 'targetAttribute' => ['id_user', 'id_category']],
-            [['id_category'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['id_category' => 'id_category']],
-            [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::className(), 'targetAttribute' => ['id_user' => 'id_user']],
+            [['name'], 'required'],
+            [['name'], 'string', 'max' => 255],
+            [['name'], 'unique'],
         ];
     }
 
@@ -43,28 +41,28 @@ class Specialization extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_user' => 'Id User',
-            'id_category' => 'Id Category',
+            'id' => 'ID',
+            'name' => 'Name',
         ];
     }
 
     /**
-     * Gets query for [[Category]].
+     * Gets query for [[ProfileSpecializations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getProfileSpecializations()
     {
-        return $this->hasOne(Category::className(), ['id_category' => 'id_category']);
+        return $this->hasMany(ProfileSpecialization::className(), ['specialization_id' => 'id']);
     }
 
     /**
-     * Gets query for [[User]].
+     * Gets query for [[Profiles]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
+    public function getProfiles()
     {
-        return $this->hasOne(Profile::className(), ['id_user' => 'id_user']);
+        return $this->hasMany(Profile::className(), ['id_user' => 'profile_id'])->viaTable('profile_specialization', ['specialization_id' => 'id']);
     }
 }

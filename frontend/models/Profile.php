@@ -33,9 +33,9 @@ use Yii;
  * @property City $city
  * @property User $user
  * @property Role $role
- * @property Response[] $responses
+ * @property ProfileSpecialization[] $profileSpecializations
  * @property Specialization[] $specializations
- * @property Category[] $categories
+ * @property Response[] $responses
  * @property Statistic $statistic
  * @property Task[] $tasks
  */
@@ -194,13 +194,13 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Responses]].
+     * Gets query for [[ProfileSpecializations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getResponses()
+    public function getProfileSpecializations()
     {
-        return $this->hasMany(Response::className(), ['id_user' => 'id_user']);
+        return $this->hasMany(ProfileSpecialization::className(), ['profile_id' => 'id_user']);
     }
 
     /**
@@ -210,17 +210,17 @@ class Profile extends \yii\db\ActiveRecord
      */
     public function getSpecializations()
     {
-        return $this->hasMany(Specialization::className(), ['id_user' => 'id_user']);
+        return $this->hasMany(Specialization::className(), ['id' => 'specialization_id'])->viaTable('profile_specialization', ['profile_id' => 'id_user']);
     }
 
     /**
-     * Gets query for [[Categories]].
+     * Gets query for [[Responses]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategories()
+    public function getResponses()
     {
-        return $this->hasMany(Category::className(), ['id_category' => 'id_category'])->viaTable('specialization', ['id_user' => 'id_user']);
+        return $this->hasMany(Response::className(), ['id_user' => 'id_user']);
     }
 
     /**
@@ -243,3 +243,4 @@ class Profile extends \yii\db\ActiveRecord
         return $this->hasMany(Task::className(), ['id_owner' => 'id_user']);
     }
 }
+
