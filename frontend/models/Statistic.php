@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models;namespace app\models;
+namespace frontend\models;
 
 use Yii;
 
@@ -12,6 +12,7 @@ use Yii;
  * @property int $count_tasks
  * @property int $count_views
  * @property int $count_fail
+ * @property int $count_reviews
  *
  * @property Profile $user
  */

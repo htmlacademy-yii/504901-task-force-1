@@ -9,5 +9,10 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'on beforeAction' => function(){
+            if(!Yii::$app->user->isGuest){
+                \common\models\User::updateAll(['activity'=>time()],['id'=>Yii::$app->user->id]);
+            }
+        },
     ],
 ];

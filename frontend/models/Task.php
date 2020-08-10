@@ -149,4 +149,14 @@ class Task extends \yii\db\ActiveRecord
     {
         return $this->hasOne(City::className(), ['id_city' => 'id_city']);
     }
+
+    /**
+     * Gets query for [[Category]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id_category' => 'id_category']);
+    }
 }
