@@ -2,8 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
-
 /**
  * This is the model class for table "profile".
  *
@@ -23,6 +21,8 @@ use Yii;
  * @property int $show_contact
  * @property int $show_profile
  *
+ * @property CategoryProfile[] $categoryProfiles
+ * @property Category[] $categories
  * @property ExecutorTask[] $executorTasks
  * @property Favorite[] $favorites
  * @property Favorite[] $favorites0
@@ -32,10 +32,8 @@ use Yii;
  * @property Notification[] $notifications
  * @property City $city
  * @property User $user
- * @property Role $role
- * @property ProfileSpecialization[] $profileSpecializations
- * @property Specialization[] $specializations
  * @property Response[] $responses
+ * @property Review[] $reviews
  * @property Statistic $statistic
  * @property Task[] $tasks
  */
@@ -65,7 +63,6 @@ class Profile extends \yii\db\ActiveRecord
             [['id_user'], 'unique'],
             [['id_city'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['id_city' => 'id_city']],
             [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_user' => 'id_user']],
-            [['id_role'], 'exist', 'skipOnError' => true, 'targetClass' => Role::className(), 'targetAttribute' => ['id_role' => 'id_role']],
         ];
     }
 
@@ -91,6 +88,26 @@ class Profile extends \yii\db\ActiveRecord
             'show_contact' => 'Show Contact',
             'show_profile' => 'Show Profile',
         ];
+    }
+
+    /**
+     * Gets query for [[CategoryProfiles]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategoryProfiles()
+    {
+        return $this->hasMany(CategoryProfile::className(), ['profile_id' => 'id_user']);
+    }
+
+    /**
+     * Gets query for [[Categories]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategories()
+    {
+        return $this->hasMany(Category::className(), ['id_category' => 'category_id'])->viaTable('category_profile', ['profile_id' => 'id_user']);
     }
 
     /**
@@ -184,36 +201,6 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Role]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRole()
-    {
-        return $this->hasOne(Role::className(), ['id_role' => 'id_role']);
-    }
-
-    /**
-     * Gets query for [[ProfileSpecializations]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProfileSpecializations()
-    {
-        return $this->hasMany(ProfileSpecialization::className(), ['profile_id' => 'id_user']);
-    }
-
-    /**
-     * Gets query for [[Specializations]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSpecializations()
-    {
-        return $this->hasMany(Specialization::className(), ['id' => 'specialization_id'])->viaTable('profile_specialization', ['profile_id' => 'id_user']);
-    }
-
-    /**
      * Gets query for [[Responses]].
      *
      * @return \yii\db\ActiveQuery
@@ -221,6 +208,16 @@ class Profile extends \yii\db\ActiveRecord
     public function getResponses()
     {
         return $this->hasMany(Response::className(), ['id_user' => 'id_user']);
+    }
+
+    /**
+     * Gets query for [[Reviews]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReviews()
+    {
+        return $this->hasMany(Review::className(), ['id_user' => 'id_user']);
     }
 
     /**
