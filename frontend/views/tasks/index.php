@@ -3,7 +3,12 @@
         <section class="new-task">
             <div class="new-task__wrapper">
                 <h1>Новые задания</h1>
-                <?php use frontend\models\FormatDate;
+                <?php
+
+                use frontend\models\Category;
+                use frontend\models\FormatDate;
+                use yii\widgets\ActiveForm;
+                use yii\helpers\Html;
 
                 foreach ($tasks as $task):?>
                     <div class="new-task__card">
@@ -20,7 +25,7 @@
                             <?= is_null($task->address) ? $task->city->name : $task->city->name . "," . $task->address ?>
                         </p>
                         <?php
-                        $interval = FormatDate::dateDiff($task->date_of_creation);
+                        $interval = FormatDate::dateDiff(strtotime($task->date_of_creation));
                         ?>
                         <span class="new-task__time"><?= $interval ?> назад</span>
                     </div>
@@ -39,37 +44,69 @@
         </section>
         <section class="search-task">
             <div class="search-task__wrapper">
-                <form class="search-task__form" name="test" method="post" action="#">
-                    <fieldset class="search-task__categories">
-                        <legend>Категории</legend>
-                        <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>
-                        <label for="1">Курьерские услуги </label>
-                        <input class="visually-hidden checkbox__input" id="2" type="checkbox" name="" value="" checked>
-                        <label for="2">Грузоперевозки </label>
-                        <input class="visually-hidden checkbox__input" id="3" type="checkbox" name="" value="">
-                        <label for="3">Переводы </label>
-                        <input class="visually-hidden checkbox__input" id="4" type="checkbox" name="" value="">
-                        <label for="4">Строительство и ремонт </label>
-                        <input class="visually-hidden checkbox__input" id="5" type="checkbox" name="" value="">
-                        <label for="5">Выгул животных </label>
-                    </fieldset>
-                    <fieldset class="search-task__categories">
-                        <legend>Дополнительно</legend>
-                        <input class="visually-hidden checkbox__input" id="6" type="checkbox" name="" value="">
-                        <label for="6">Без откликов</label>
-                        <input class="visually-hidden checkbox__input" id="7" type="checkbox" name="" value="" checked>
-                        <label for="7">Удаленная работа </label>
-                    </fieldset>
-                    <label class="search-task__name" for="8">Период</label>
-                    <select class="multiple-select input" id="8" size="1" name="time[]">
-                        <option value="day">За день</option>
-                        <option selected value="week">За неделю</option>
-                        <option value="month">За месяц</option>
-                    </select>
-                    <label class="search-task__name" for="9">Поиск по названию</label>
-                    <input class="input-middle input" id="9" type="search" name="q" placeholder="">
-                    <button class="button" type="submit">Искать</button>
-                </form>
+                <?php $form = ActiveForm::begin([
+                    'id' => 'filter-form',
+                    'options' => ['class' => 'search-task__form'],
+                    'action' => ['/tasks'],
+                    'method' => 'post'
+                ]); ?>
+                <fieldset class="search-task__categories">
+                    <legend>Категории</legend>
+                    <?= $form->field($filter, 'categories')
+                        ->checkboxList(Category::find()->select(['name', 'id_category'])->indexBy('id_category')->column(),
+                            [
+                                'item' => function ($index, $label, $name, $checked, $value) {
+                                    $checked = $checked ? 'checked' : '';
+                                    return "<input class=\"visually-hidden checkbox__input\" id='{$index}' type='checkbox' name='{$name}' value='{$value}' $checked >
+										<label for='{$index}'>{$label}</label>";
+                                }])->label(false) ?>
+                </fieldset>
+                <fieldset class="search-task__categories">
+                    <legend>Дополнительно</legend>
+                    <?= $form->field($filter, 'withoutResponse', [
+                        'template' => '{input}{label}',
+                        'options' => ['class' => ''],
+                    ])
+                        ->checkbox([
+                            'class' => 'visually-hidden checkbox__input',
+                        ], false) ?>
+                    <?= $form->field($filter, 'remoteWork', [
+                        'template' => '{input}{label}',
+                        'options' => ['class' => ''],
+                    ])
+                        ->checkbox([
+                            'class' => 'visually-hidden checkbox__input',
+                        ], false) ?>
+                </fieldset>
+                <label class="search-task__name" for="8">Период</label>
+                <?= $form->field($filter, 'period', [
+                    'options' => ['tag' => false],
+                    'template' => '{label}{input}'
+                ])
+                    ->label(false)
+                    ->dropDownList($filter->attributeLabelsPeriod(),
+                        [
+                            'class' => 'multiple-select input',
+                            'options' => [
+                                'week' => [
+                                    'Selected' => true
+                                ]
+                            ]
+                        ]); ?>
+
+                <?= $form->field($filter, 'search', [
+                    'template' => '{label}{input}',
+                    'options' => ['class' => ''],
+                    'labelOptions' => ['class' => 'search-task__name']
+                ])
+                    ->input('search', [
+                        'class' => 'input-middle input',
+                        'style' => 'width: 100%'
+                    ]);
+                ?>
+
+                <?= Html::submitButton('Искать', ['class' => 'button']); ?>
+                <?php ActiveForm::end(); ?>
             </div>
         </section>
     </div>

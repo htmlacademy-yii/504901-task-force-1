@@ -2,8 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
-
 /**
  * This is the model class for table "user".
  *
@@ -12,12 +10,16 @@ use Yii;
  * @property string $password
  * @property string $name
  * @property string $date_of_registration
+ * @property int|null $last_activity
  *
  * @property Profile $profile
  * @property UserActivity[] $userActivities
  */
 class User extends \yii\db\ActiveRecord
 {
+    const CUSTOMER = 1;
+    const EXECUTOR = 2;
+
     /**
      * {@inheritdoc}
      */
@@ -34,6 +36,7 @@ class User extends \yii\db\ActiveRecord
         return [
             [['email', 'password', 'name'], 'required'],
             [['date_of_registration'], 'safe'],
+            [['last_activity'], 'integer'],
             [['email'], 'string', 'max' => 128],
             [['password'], 'string', 'max' => 255],
             [['name'], 'string', 'max' => 50],
@@ -52,6 +55,7 @@ class User extends \yii\db\ActiveRecord
             'password' => 'Password',
             'name' => 'Name',
             'date_of_registration' => 'Date Of Registration',
+            'last_activity' => 'Last Activity',
         ];
     }
 

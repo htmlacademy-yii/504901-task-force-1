@@ -2,14 +2,11 @@
 
 namespace frontend\models;
 
-use Yii;
-
 /**
  * This is the model class for table "task".
  *
  * @property int $id_task
  * @property string $date_of_creation
- * @property int $id_status
  * @property string $name_task
  * @property int $id_city
  * @property string|null $address
@@ -20,17 +17,23 @@ use Yii;
  * @property float|null $latitude
  * @property float|null $longitude
  * @property int $id_owner
+ * @property string|null $status
  *
  * @property File[] $files
  * @property Notification[] $notifications
  * @property Response[] $responses
- * @property Review[] $reviews
- * @property Status $status
  * @property Profile $owner
  * @property City $city
+ * @property Category $category
  */
 class Task extends \yii\db\ActiveRecord
 {
+    const STATUS_NEW = 'new';
+    const STATUS_CANCELED = 'canceled';
+    const STATUS_IN_WORK = 'in_work';
+    const STATUS_PERFORMED = 'performed';
+    const STATUS_FAILED = 'failed';
+
     /**
      * {@inheritdoc}
      */
@@ -46,15 +49,15 @@ class Task extends \yii\db\ActiveRecord
     {
         return [
             [['date_of_creation', 'date_of_completion'], 'safe'],
-            [['id_status', 'name_task', 'id_city', 'id_category', 'description', 'id_owner'], 'required'],
-            [['id_status', 'id_city', 'id_category', 'budget', 'id_owner'], 'integer'],
+            [['name_task', 'id_city', 'id_category', 'description', 'id_owner'], 'required'],
+            [['id_city', 'id_category', 'budget', 'id_owner'], 'integer'],
             [['description'], 'string'],
             [['latitude', 'longitude'], 'number'],
-            [['name_task'], 'string', 'max' => 255],
+            [['name_task', 'status'], 'string', 'max' => 255],
             [['address'], 'string', 'max' => 50],
-            [['id_status'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['id_status' => 'id_status']],
             [['id_owner'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::className(), 'targetAttribute' => ['id_owner' => 'id_user']],
             [['id_city'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['id_city' => 'id_city']],
+            [['id_category'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['id_category' => 'id_category']],
         ];
     }
 
@@ -66,7 +69,6 @@ class Task extends \yii\db\ActiveRecord
         return [
             'id_task' => 'Id Task',
             'date_of_creation' => 'Date Of Creation',
-            'id_status' => 'Id Status',
             'name_task' => 'Name Task',
             'id_city' => 'Id City',
             'address' => 'Address',
@@ -77,6 +79,7 @@ class Task extends \yii\db\ActiveRecord
             'latitude' => 'Latitude',
             'longitude' => 'Longitude',
             'id_owner' => 'Id Owner',
+            'status' => 'Status',
         ];
     }
 
@@ -108,26 +111,6 @@ class Task extends \yii\db\ActiveRecord
     public function getResponses()
     {
         return $this->hasMany(Response::className(), ['id_task' => 'id_task']);
-    }
-
-    /**
-     * Gets query for [[Reviews]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getReviews()
-    {
-        return $this->hasMany(Review::className(), ['id_task' => 'id_task']);
-    }
-
-    /**
-     * Gets query for [[Status]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStatus()
-    {
-        return $this->hasOne(Status::className(), ['id_status' => 'id_status']);
     }
 
     /**

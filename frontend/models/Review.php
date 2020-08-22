@@ -2,8 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
-
 /**
  * This is the model class for table "review".
  *
@@ -11,9 +9,9 @@ use Yii;
  * @property string $date_add
  * @property int|null $mark
  * @property string|null $comment
- * @property int $id_task
+ * @property int|null $id_user
  *
- * @property Task $task
+ * @property Profile $user
  */
 class Review extends \yii\db\ActiveRecord
 {
@@ -32,10 +30,9 @@ class Review extends \yii\db\ActiveRecord
     {
         return [
             [['date_add'], 'safe'],
-            [['mark', 'id_task'], 'integer'],
+            [['mark', 'id_user'], 'integer'],
             [['comment'], 'string'],
-            [['id_task'], 'required'],
-            [['id_task'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['id_task' => 'id_task']],
+            [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::className(), 'targetAttribute' => ['id_user' => 'id_user']],
         ];
     }
 
@@ -49,17 +46,17 @@ class Review extends \yii\db\ActiveRecord
             'date_add' => 'Date Add',
             'mark' => 'Mark',
             'comment' => 'Comment',
-            'id_task' => 'Id Task',
+            'id_user' => 'Id User',
         ];
     }
 
     /**
-     * Gets query for [[Task]].
+     * Gets query for [[User]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTask()
+    public function getUser()
     {
-        return $this->hasOne(Task::className(), ['id_task' => 'id_task']);
+        return $this->hasOne(Profile::className(), ['id_user' => 'id_user']);
     }
 }

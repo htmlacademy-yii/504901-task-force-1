@@ -2,8 +2,6 @@
 
 namespace frontend\models;
 
-use Yii;
-
 /**
  * This is the model class for table "executor_task".
  *
@@ -58,4 +56,9 @@ class ExecutorTask extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Profile::className(), ['id_user' => 'id_executor']);
     }
+    /**
+     * Gets query for [[Executor]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
 }
