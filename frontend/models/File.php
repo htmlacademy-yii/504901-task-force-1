@@ -7,8 +7,8 @@ use Yii;
 /**
  * This is the model class for table "file".
  *
- * @property int $id_file
- * @property int $id_task
+ * @property int $id
+ * @property int $task_id
  * @property string|null $name
  *
  * @property Task $task
@@ -29,10 +29,10 @@ class File extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_task'], 'required'],
-            [['id_task'], 'integer'],
+            [['task_id'], 'required'],
+            [['task_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
-            [['id_task'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['id_task' => 'id_task']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -42,8 +42,8 @@ class File extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_file' => 'Id File',
-            'id_task' => 'Id Task',
+            'id' => 'ID',
+            'task_id' => 'Task ID',
             'name' => 'Name',
         ];
     }
@@ -55,6 +55,6 @@ class File extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id_task' => 'id_task']);
+        return $this->hasOne(Task::className(), ['id' => 'task_id']);
     }
 }

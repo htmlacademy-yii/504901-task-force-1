@@ -7,12 +7,11 @@ use Yii;
 /**
  * This is the model class for table "status".
  *
- * @property int $id_status
+ * @property int $id
  * @property string|null $name
  * @property string|null $translation
  *
- * @property StatusRole[] $statusRoles
- * @property Role[] $roles
+ * @property ExecutorTask[] $executorTasks
  * @property Task[] $tasks
  */
 class Status extends \yii\db\ActiveRecord
@@ -41,30 +40,20 @@ class Status extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_status' => 'Id Status',
+            'id' => 'ID',
             'name' => 'Name',
             'translation' => 'Translation',
         ];
     }
 
     /**
-     * Gets query for [[StatusRoles]].
+     * Gets query for [[ExecutorTasks]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getStatusRoles()
+    public function getExecutorTasks()
     {
-        return $this->hasMany(StatusRole::className(), ['id_status' => 'id_status']);
-    }
-
-    /**
-     * Gets query for [[Roles]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRoles()
-    {
-        return $this->hasMany(Role::className(), ['id_role' => 'id_role'])->viaTable('status_role', ['id_status' => 'id_status']);
+        return $this->hasMany(ExecutorTask::className(), ['status_id' => 'id']);
     }
 
     /**
@@ -74,6 +63,6 @@ class Status extends \yii\db\ActiveRecord
      */
     public function getTasks()
     {
-        return $this->hasMany(Task::className(), ['id_status' => 'id_status']);
+        return $this->hasMany(Task::className(), ['status_id' => 'id']);
     }
 }

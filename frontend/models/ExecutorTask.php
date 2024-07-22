@@ -2,14 +2,20 @@
 
 namespace frontend\models;
 
+use Yii;
+
 /**
  * This is the model class for table "executor_task".
  *
- * @property int $id_task
+ * @property int $id
+ * @property int $task_id
  * @property string $date_of_appointment
- * @property int $id_executor
+ * @property int $executor_id
+ * @property int $status_id
  *
- * @property Profile $executor
+ * @property User $executor
+ * @property Status $status
+ * @property Task $task
  */
 class ExecutorTask extends \yii\db\ActiveRecord
 {
@@ -27,11 +33,12 @@ class ExecutorTask extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_task', 'id_executor'], 'required'],
-            [['id_task', 'id_executor'], 'integer'],
+            [['task_id', 'executor_id', 'status_id'], 'required'],
+            [['task_id', 'executor_id', 'status_id'], 'integer'],
             [['date_of_appointment'], 'safe'],
-            [['id_task'], 'unique'],
-            [['id_executor'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::className(), 'targetAttribute' => ['id_executor' => 'id_user']],
+            [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['executor_id' => 'id']],
+            [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -41,9 +48,11 @@ class ExecutorTask extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_task' => 'Id Task',
+            'id' => 'ID',
+            'task_id' => 'Task ID',
             'date_of_appointment' => 'Date Of Appointment',
-            'id_executor' => 'Id Executor',
+            'executor_id' => 'Executor ID',
+            'status_id' => 'Status ID',
         ];
     }
 
@@ -54,11 +63,26 @@ class ExecutorTask extends \yii\db\ActiveRecord
      */
     public function getExecutor()
     {
-        return $this->hasOne(Profile::className(), ['id_user' => 'id_executor']);
+        return $this->hasOne(User::className(), ['id' => 'executor_id']);
     }
+
     /**
-     * Gets query for [[Executor]].
+     * Gets query for [[Status]].
      *
      * @return \yii\db\ActiveQuery
      */
+    public function getStatus()
+    {
+        return $this->hasOne(Status::className(), ['id' => 'status_id']);
+    }
+
+    /**
+     * Gets query for [[Task]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTask()
+    {
+        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+    }
 }

@@ -2,15 +2,16 @@
 
 namespace frontend\models;
 
+use Yii;
+
 /**
  * This is the model class for table "category".
  *
- * @property int $id_category
+ * @property int $id
  * @property string $name
  * @property string $icon
  *
- * @property CategoryProfile[] $categoryProfiles
- * @property Profile[] $profiles
+ * @property Specialization[] $specializations
  * @property Task[] $tasks
  */
 class Category extends \yii\db\ActiveRecord
@@ -40,30 +41,20 @@ class Category extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_category' => 'Id Category',
+            'id' => 'ID',
             'name' => 'Name',
             'icon' => 'Icon',
         ];
     }
 
     /**
-     * Gets query for [[CategoryProfiles]].
+     * Gets query for [[Specializations]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCategoryProfiles()
+    public function getSpecializations()
     {
-        return $this->hasMany(CategoryProfile::className(), ['category_id' => 'id_category']);
-    }
-
-    /**
-     * Gets query for [[Profiles]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProfiles()
-    {
-        return $this->hasMany(Profile::className(), ['id_user' => 'profile_id'])->viaTable('category_profile', ['category_id' => 'id_category']);
+        return $this->hasMany(Specialization::className(), ['category_id' => 'id']);
     }
 
     /**
@@ -73,15 +64,6 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getTasks()
     {
-        return $this->hasMany(Task::className(), ['id_category' => 'id_category']);
-    }
-
-    /**
-     * {@inheritdoc}
-     * @return CategoryQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new CategoryQuery(get_called_class());
+        return $this->hasMany(Task::className(), ['category_id' => 'id']);
     }
 }
