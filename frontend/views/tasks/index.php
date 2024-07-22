@@ -7,13 +7,14 @@
 
                 use frontend\models\Category;
                 use frontend\models\FormatDate;
+                use yii\helpers\Url;
                 use yii\widgets\ActiveForm;
                 use yii\helpers\Html;
 
                 foreach ($tasks as $task):?>
                     <div class="new-task__card">
                         <div class="new-task__title">
-                            <a href="#" class="link-regular"><h2><?= $task->name_task ?></h2></a>
+                            <a href="<?= Url::to(['tasks/view/' . $task->id_task]); ?>" class="link-regular"><h2><?= $task->name_task ?></h2></a>
                             <a class="new-task__type link-regular" href="#"><p><?= $task->category->name ?></p></a>
                         </div>
                         <div class="new-task__icon new-task__icon--<?= $task->category->icon ?>"></div>
@@ -24,10 +25,7 @@
                         <p class="new-task__place">
                             <?= is_null($task->address) ? $task->city->name : $task->city->name . "," . $task->address ?>
                         </p>
-                        <?php
-                        $interval = FormatDate::dateDiff(strtotime($task->date_of_creation));
-                        ?>
-                        <span class="new-task__time"><?= $interval ?> назад</span>
+                        <span class="new-task__time"><?= FormatDate::dateDiff(strtotime($task->date_of_creation)) ?> назад</span>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -48,7 +46,7 @@
                     'id' => 'filter-form',
                     'options' => ['class' => 'search-task__form'],
                     'action' => ['/tasks'],
-                    'method' => 'post'
+                    'method' => 'get'
                 ]); ?>
                 <fieldset class="search-task__categories">
                     <legend>Категории</legend>
@@ -88,7 +86,7 @@
                         [
                             'class' => 'multiple-select input',
                             'options' => [
-                                'week' => [
+                                'all' => [
                                     'Selected' => true
                                 ]
                             ]

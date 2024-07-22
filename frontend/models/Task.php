@@ -21,6 +21,8 @@ namespace frontend\models;
  *
  * @property File[] $files
  * @property Notification[] $notifications
+ * @property ProfileTask[] $profileTasks
+ * @property Profile[] $profiles
  * @property Response[] $responses
  * @property Profile $owner
  * @property City $city
@@ -101,6 +103,26 @@ class Task extends \yii\db\ActiveRecord
     public function getNotifications()
     {
         return $this->hasMany(Notification::className(), ['id_task' => 'id_task']);
+    }
+
+    /**
+     * Gets query for [[ProfileTasks]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfileTasks()
+    {
+        return $this->hasMany(ProfileTask::className(), ['task_id' => 'id_task']);
+    }
+
+    /**
+     * Gets query for [[Profiles]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfiles()
+    {
+        return $this->hasMany(Profile::className(), ['id_user' => 'profile_id'])->viaTable('profile_task', ['task_id' => 'id_task']);
     }
 
     /**

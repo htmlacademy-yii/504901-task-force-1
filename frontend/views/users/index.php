@@ -43,10 +43,7 @@
                                 <?= $user->about ?>
                             </p>
                         </div>
-                        <?php
-                        $interval = FormatDate::dateDiff($user->user->last_activity);
-                        ?>
-                        <span class="new-task__time">Был на сайте <?= $interval ?> назад</span>
+                        <span class="new-task__time">Был на сайте <?= FormatDate::dateDiff($user->user->last_activity) ?> назад</span>
                     </div>
                     <div class="link-specialization user__search-link--bottom">
                         <?php

@@ -32,10 +32,12 @@ namespace frontend\models;
  * @property Notification[] $notifications
  * @property City $city
  * @property User $user
+ * @property ProfileTask[] $profileTasks
+ * @property Task[] $tasks
  * @property Response[] $responses
  * @property Review[] $reviews
  * @property Statistic $statistic
- * @property Task[] $tasks
+ * @property Task[] $tasks0
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -201,6 +203,26 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[ProfileTasks]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfileTasks()
+    {
+        return $this->hasMany(ProfileTask::className(), ['profile_id' => 'id_user']);
+    }
+
+    /**
+     * Gets query for [[Tasks]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTasks()
+    {
+        return $this->hasMany(Task::className(), ['id_task' => 'task_id'])->viaTable('profile_task', ['profile_id' => 'id_user']);
+    }
+
+    /**
      * Gets query for [[Responses]].
      *
      * @return \yii\db\ActiveQuery
@@ -231,11 +253,11 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Tasks]].
+     * Gets query for [[Tasks0]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTasks()
+    public function getTasks0()
     {
         return $this->hasMany(Task::className(), ['id_owner' => 'id_user']);
     }
