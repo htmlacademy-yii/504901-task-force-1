@@ -20,41 +20,41 @@ class TasksController extends Controller
     {
         $filter = new FilterTasksForm();
         $query = Task::find()
-            ->with('category', 'city')
-            ->where(['task.status' => Task::STATUS_NEW])
+            ->joinWith('category')
+            ->where(['status_id' => Task::STATUS_NEW])
             ->orderBy(['date_of_creation' => SORT_DESC]);
      //   if (Yii::$app->request->getIsPost()) {
 
-            $filter->load(Yii::$app->request->get());
-            if ($filter->withoutResponse) {
-                $query->joinWith('profileTasks');
-                $query->andWhere(['profile_task.task_id' => null]);
-            }
-            if ($filter->categories) {
-                $query->andWhere(['id_category' => $filter->categories]);
-            }
-            if ($filter->remoteWork) {
-                $query->andWhere(['address' => null]);
-            }
-            if ($filter->search) {
-                $query->andWhere(['LIKE', 'task.name_task', $filter->search]);
-            }
-            switch ($filter->period) {
-                case 'day':
-                    $query->andWhere(['>=', 'date_of_creation', date("Y-m-d H:i:s", strtotime("-1 day"))]);
-                    break;
-                case 'week':
-                    $query->andWhere(['>=', 'date_of_creation', date("Y-m-d H:i:s", strtotime("-1 week"))]);
-                    break;
-                case 'month':
-                    $query->andWhere(['>=', 'date_of_creation', date("Y-m-d H:i:s", strtotime("-1 month"))]);
-                    break;
-            }
+            // $filter->load(Yii::$app->request->get());
+            // if ($filter->withoutResponse) {
+            //     $query->joinWith('profileTasks');
+            //     $query->andWhere(['profile_task.task_id' => null]);
+            // }
+            // if ($filter->categories) {
+            //     $query->andWhere(['id_category' => $filter->categories]);
+            // }
+            // if ($filter->remoteWork) {
+            //     $query->andWhere(['address' => null]);
+            // }
+            // if ($filter->search) {
+            //     $query->andWhere(['LIKE', 'task.name_task', $filter->search]);
+            // }
+            // switch ($filter->period) {
+            //     case 'day':
+            //         $query->andWhere(['>=', 'date_of_creation', date("Y-m-d H:i:s", strtotime("-1 day"))]);
+            //         break;
+            //     case 'week':
+            //         $query->andWhere(['>=', 'date_of_creation', date("Y-m-d H:i:s", strtotime("-1 week"))]);
+            //         break;
+            //     case 'month':
+            //         $query->andWhere(['>=', 'date_of_creation', date("Y-m-d H:i:s", strtotime("-1 month"))]);
+            //         break;
+            // }
  //       }
         $tasks = $query->all();
         return $this->render('index', [
             'tasks' => $tasks,
-            'filter' => $filter,
+//            'filter' => $filter,
         ]);
     }
 

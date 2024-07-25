@@ -14,7 +14,7 @@
                 foreach ($tasks as $task):?>
                     <div class="new-task__card">
                         <div class="new-task__title">
-                            <a href="<?= Url::to(['tasks/view/' . $task->id_task]); ?>" class="link-regular"><h2><?= $task->name_task ?></h2></a>
+                            <a href="<?= Url::to(['tasks/view/' . $task->id]); ?>" class="link-regular"><h2><?= $task->name_task ?></h2></a>
                             <a class="new-task__type link-regular" href="#"><p><?= $task->category->name ?></p></a>
                         </div>
                         <div class="new-task__icon new-task__icon--<?= $task->category->icon ?>"></div>
@@ -23,9 +23,9 @@
                         </p>
                         <b class="new-task__price new-task__price--translation"><?= $task->budget ?><b> ₽</b></b>
                         <p class="new-task__place">
-                            <?= is_null($task->address) ? $task->city->name : $task->city->name . "," . $task->address ?>
+                            
                         </p>
-                        <span class="new-task__time"><?= FormatDate::dateDiff(strtotime($task->date_of_creation)) ?> назад</span>
+                        <span class="new-task__time"><?= FormatDate::dateDiff($task->date_of_creation) ?> назад</span>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -40,72 +40,40 @@
                 </ul>
             </div>
         </section>
-        <section class="search-task">
-            <div class="search-task__wrapper">
-                <?php $form = ActiveForm::begin([
-                    'id' => 'filter-form',
-                    'options' => ['class' => 'search-task__form'],
-                    'action' => ['/tasks'],
-                    'method' => 'get'
-                ]); ?>
-                <fieldset class="search-task__categories">
-                    <legend>Категории</legend>
-                    <?= $form->field($filter, 'categories')
-                        ->checkboxList(Category::find()->select(['name', 'id_category'])->indexBy('id_category')->column(),
-                            [
-                                'item' => function ($index, $label, $name, $checked, $value) {
-                                    $checked = $checked ? 'checked' : '';
-                                    return "<input class=\"visually-hidden checkbox__input\" id='{$index}' type='checkbox' name='{$name}' value='{$value}' $checked >
-										<label for='{$index}'>{$label}</label>";
-                                }])->label(false) ?>
-                </fieldset>
-                <fieldset class="search-task__categories">
-                    <legend>Дополнительно</legend>
-                    <?= $form->field($filter, 'withoutResponse', [
-                        'template' => '{input}{label}',
-                        'options' => ['class' => ''],
-                    ])
-                        ->checkbox([
-                            'class' => 'visually-hidden checkbox__input',
-                        ], false) ?>
-                    <?= $form->field($filter, 'remoteWork', [
-                        'template' => '{input}{label}',
-                        'options' => ['class' => ''],
-                    ])
-                        ->checkbox([
-                            'class' => 'visually-hidden checkbox__input',
-                        ], false) ?>
-                </fieldset>
-                <label class="search-task__name" for="8">Период</label>
-                <?= $form->field($filter, 'period', [
-                    'options' => ['tag' => false],
-                    'template' => '{label}{input}'
-                ])
-                    ->label(false)
-                    ->dropDownList($filter->attributeLabelsPeriod(),
-                        [
-                            'class' => 'multiple-select input',
-                            'options' => [
-                                'all' => [
-                                    'Selected' => true
-                                ]
-                            ]
-                        ]); ?>
-
-                <?= $form->field($filter, 'search', [
-                    'template' => '{label}{input}',
-                    'options' => ['class' => ''],
-                    'labelOptions' => ['class' => 'search-task__name']
-                ])
-                    ->input('search', [
-                        'class' => 'input-middle input',
-                        'style' => 'width: 100%'
-                    ]);
-                ?>
-
-                <?= Html::submitButton('Искать', ['class' => 'button']); ?>
-                <?php ActiveForm::end(); ?>
-            </div>
-        </section>
+        <section  class="search-task">
+                <div class="search-task__wrapper">
+                    <form class="search-task__form" name="test" method="post" action="#">
+                        <fieldset class="search-task__categories">
+                            <legend>Категории</legend>
+                            <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>
+                            <label for="1">Курьерские услуги </label>
+                            <input class="visually-hidden checkbox__input" id="2" type="checkbox" name="" value="" checked>
+                            <label  for="2">Грузоперевозки </label>
+                            <input class="visually-hidden checkbox__input" id="3" type="checkbox" name="" value="">
+                            <label  for="3">Переводы </label>
+                            <input class="visually-hidden checkbox__input" id="4" type="checkbox" name="" value="">
+                            <label  for="4">Строительство и ремонт </label>
+                            <input class="visually-hidden checkbox__input" id="5" type="checkbox" name="" value="">
+                            <label  for="5">Выгул животных </label>
+                        </fieldset>
+                        <fieldset class="search-task__categories">
+                            <legend>Дополнительно</legend>
+                            <input class="visually-hidden checkbox__input" id="6" type="checkbox" name="" value="">
+                            <label for="6">Без откликов</label>
+                           <input class="visually-hidden checkbox__input" id="7" type="checkbox" name="" value="" checked>
+                            <label for="7">Удаленная работа </label>
+                        </fieldset>
+                       <label class="search-task__name" for="8">Период</label>
+                           <select class="multiple-select input" id="8"size="1" name="time[]">
+                            <option value="day">За день</option>
+                            <option selected value="week">За неделю</option>
+                            <option value="month">За месяц</option>
+                        </select>
+                        <label class="search-task__name" for="9">Поиск по названию</label>
+                            <input class="input-middle input" id="9" type="search" name="q" placeholder="">
+                        <button class="button" type="submit">Искать</button>
+                    </form>
+                </div>
+            </section>
     </div>
 </main>

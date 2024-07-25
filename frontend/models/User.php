@@ -29,6 +29,7 @@ use Yii;
  * @property int $count_views
  * @property int $count_fail
  * @property string $date_activity
+ * @property string|null $role
  *
  * @property ExecutorTask[] $executorTasks
  * @property Response[] $responses
@@ -38,6 +39,8 @@ use Yii;
  */
 class User extends \yii\db\ActiveRecord
 {
+    const CUSTOMER = 'customer';
+    const EXECUTOR = 'executor';
     /**
      * {@inheritdoc}
      */
@@ -61,6 +64,7 @@ class User extends \yii\db\ActiveRecord
             [['password', 'avatar'], 'string', 'max' => 255],
             [['name', 'skype', 'telegram'], 'string', 'max' => 50],
             [['phone'], 'string', 'max' => 11],
+            [['role'], 'string', 'max' => 10],
             [['email'], 'unique'],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
         ];
@@ -94,6 +98,7 @@ class User extends \yii\db\ActiveRecord
             'count_views' => 'Count Views',
             'count_fail' => 'Count Fail',
             'date_activity' => 'Date Activity',
+            'role' => 'Role',
         ];
     }
 

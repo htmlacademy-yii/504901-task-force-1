@@ -27,6 +27,12 @@ use Yii;
  */
 class Task extends \yii\db\ActiveRecord
 {
+    const STATUS_NEW = 1;
+    const STATUS_CANCELED = 2;
+    const STATUS_IN_WORK = 3;
+    const STATUS_PERFORMED = 4;
+    const STATUS_FAILED = 5;
+    
     /**
      * {@inheritdoc}
      */
@@ -138,5 +144,15 @@ class Task extends \yii\db\ActiveRecord
     public function getCategory()
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
+    }
+
+    /**
+     * Gets query for [[Locations]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLocations()
+    {
+        return $this->hasMany(Location::className(), ['task_id' => 'id']);
     }
 }
