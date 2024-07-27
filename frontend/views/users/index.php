@@ -15,43 +15,43 @@
                     </li>
                 </ul>
             </div>
-            <?php use frontend\models\Category;
+            <?php 
+            use frontend\models\Category;
             use frontend\models\FormatDate;
             use yii\helpers\Html;
             use yii\widgets\ActiveForm;
+            use yii\helpers\Url;
 
             foreach ($users as $user): ?>
                 <div class="content-view__feedback-card user__search-wrapper">
                     <div class="feedback-card__top">
                         <div class="user__search-icon">
-                            <a href="#"><img src="./img/<?= $user->avatar ?>" width="65" height="65"></a>
-                            <span><?= $user->statistic->count_tasks ?> заданий</span>
-                            <span><?= $user->statistic->count_reviews ?> отзывов</span>
+                            <a href="<?= Url::to(['user/view/' . $user->id]); ?>"><img src="./img/<?= $user->avatar ?>" width="65" height="65"></a>
+                            <span><?= $user->count_tasks ?> заданий</span>
+                            <span><?= $user->count_views ?> отзывов</span>
                         </div>
                         <div class="feedback-card__top--name user__search-card">
-                            <p class="link-name"><a href="#" class="link-regular"></a></p>
+                            <p class="link-name"><a href="<?= Url::to(['user/view/' . $user->id]); ?>" class="link-regular"><?=$user->name?></a></p>
                             <?php
-                            $countStars = round($user->statistic->rating, 0);
+                            $countStars = round($user->rating, 0);
                             for ($i = 0; $i < $countStars; $i++): ?>
                                 <span></span>
                             <?php endfor; ?>
                             <?php for ($i = $countStars; $i < 5; $i++): ?>
                                 <span class="star-disabled"></span>
                             <?php endfor; ?>
-                            <b><?= number_format($user->statistic->rating, 2) ?></b>
+                            <b><?= number_format($user->rating, 2) ?></b>
                             <p class="user__search-content">
                                 <?= $user->about ?>
                             </p>
                         </div>
-                        <?php
-                        $interval = FormatDate::dateDiff($user->user->last_activity);
-                        ?>
-                        <span class="new-task__time">Был на сайте <?= $interval ?> назад</span>
+                        <span class="new-task__time">Был на сайте <?= FormatDate::dateDiff($user->date_activity) ?> назад</span>
                     </div>
                     <div class="link-specialization user__search-link--bottom">
                         <?php
-                        foreach ($user->categoryProfiles as $item) {
-                            print '<a href="#" class="link-regular">' . $item->category->name . '</a>';
+                        foreach ($user->specializations as $item) {
+                            $href = Url::to(['/tasks',  'FilterTasksForm[categories][]' => $item->category->id - 1]);
+                            print "<a href='{$href}' class='link-regular'>{$item->category->name} </a>";
                         }
                         ?>
                     </div>
@@ -64,12 +64,12 @@
                     'id' => 'filter-user-form',
                     'options' => ['class' => 'search-task__form'],
                     'action' => ['/users'],
-                    'method' => 'post'
+                    'method' => 'get'
                 ]); ?>
                 <fieldset class="search-task__categories">
                     <legend>Категории</legend>
                     <?= $form->field($filter, 'categories')
-                        ->checkboxList(Category::find()->select(['name', 'id_category'])->indexBy('id_category')->column(),
+                        ->checkboxList(Category::find()->select(['name', 'id'])->column(),
                             [
                                 'item' => function ($index, $label, $name, $checked, $value) {
                                     $checked = $checked ? 'checked' : '';

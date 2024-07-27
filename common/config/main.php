@@ -9,8 +9,15 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+           'showScriptName' => false,
+            'rules' => [
+                // ...
+            ],
+       ],
         'on beforeAction' => function(){
-            if(!Yii::$app->user->isGuest){
+           if(!Yii::$app->user->isGuest){
                 \common\models\User::updateAll(['activity'=>time()],['id'=>Yii::$app->user->id]);
             }
         },

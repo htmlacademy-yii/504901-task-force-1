@@ -7,13 +7,14 @@
 
                 use frontend\models\Category;
                 use frontend\models\FormatDate;
+                use yii\helpers\Url;
                 use yii\widgets\ActiveForm;
                 use yii\helpers\Html;
 
                 foreach ($tasks as $task):?>
                     <div class="new-task__card">
                         <div class="new-task__title">
-                            <a href="#" class="link-regular"><h2><?= $task->name_task ?></h2></a>
+                            <a href="<?= Url::to(['task/view/' . $task->id]); ?>" class="link-regular"><h2><?= $task->name_task ?></h2></a>
                             <a class="new-task__type link-regular" href="#"><p><?= $task->category->name ?></p></a>
                         </div>
                         <div class="new-task__icon new-task__icon--<?= $task->category->icon ?>"></div>
@@ -22,12 +23,11 @@
                         </p>
                         <b class="new-task__price new-task__price--translation"><?= $task->budget ?><b> ₽</b></b>
                         <p class="new-task__place">
-                            <?= is_null($task->address) ? $task->city->name : $task->city->name . "," . $task->address ?>
+                           <?php if (!is_null($task->address)): ?>
+                            <?= $task->address ?>
+                            <?php endif;?>
                         </p>
-                        <?php
-                        $interval = FormatDate::dateDiff(strtotime($task->date_of_creation));
-                        ?>
-                        <span class="new-task__time"><?= $interval ?> назад</span>
+                        <span class="new-task__time"><?= FormatDate::dateDiff($task->date_of_creation) ?> назад</span>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -42,18 +42,18 @@
                 </ul>
             </div>
         </section>
-        <section class="search-task">
-            <div class="search-task__wrapper">
-                <?php $form = ActiveForm::begin([
-                    'id' => 'filter-form',
-                    'options' => ['class' => 'search-task__form'],
-                    'action' => ['/tasks'],
-                    'method' => 'post'
-                ]); ?>
-                <fieldset class="search-task__categories">
-                    <legend>Категории</legend>
+        <section  class="search-task">
+                <div class="search-task__wrapper">
+                    <?php $form = ActiveForm::begin([
+                        'id' => 'filter-form',
+                        'options' => ['class' => 'search-task__form'],
+                        'action' => ['/tasks'],
+                        'method' => 'get'
+                    ]); ?>
+                        <fieldset class="search-task__categories">
+                        <legend>Категории</legend>
                     <?= $form->field($filter, 'categories')
-                        ->checkboxList(Category::find()->select(['name', 'id_category'])->indexBy('id_category')->column(),
+                        ->checkboxList(Category::find()->select(['name', 'id'])->column(),
                             [
                                 'item' => function ($index, $label, $name, $checked, $value) {
                                     $checked = $checked ? 'checked' : '';
@@ -87,11 +87,7 @@
                     ->dropDownList($filter->attributeLabelsPeriod(),
                         [
                             'class' => 'multiple-select input',
-                            'options' => [
-                                'week' => [
-                                    'Selected' => true
-                                ]
-                            ]
+                            
                         ]); ?>
 
                 <?= $form->field($filter, 'search', [
@@ -108,6 +104,6 @@
                 <?= Html::submitButton('Искать', ['class' => 'button']); ?>
                 <?php ActiveForm::end(); ?>
             </div>
-        </section>
+            </section>
     </div>
 </main>

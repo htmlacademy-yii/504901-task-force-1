@@ -7,13 +7,12 @@ use Yii;
 /**
  * This is the model class for table "city".
  *
- * @property int $id_city
+ * @property int $id
  * @property string $name
  * @property float $latitude
  * @property float $longitude
  *
- * @property Profile[] $profiles
- * @property Task[] $tasks
+ * @property User[] $users
  */
 class City extends \yii\db\ActiveRecord
 {
@@ -43,7 +42,7 @@ class City extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_city' => 'Id City',
+            'id' => 'ID',
             'name' => 'Name',
             'latitude' => 'Latitude',
             'longitude' => 'Longitude',
@@ -51,22 +50,12 @@ class City extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Profiles]].
+     * Gets query for [[Users]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProfiles()
+    public function getUsers()
     {
-        return $this->hasMany(Profile::className(), ['id_city' => 'id_city']);
-    }
-
-    /**
-     * Gets query for [[Tasks]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTasks()
-    {
-        return $this->hasMany(Task::className(), ['id_city' => 'id_city']);
+        return $this->hasMany(User::className(), ['city_id' => 'id']);
     }
 }

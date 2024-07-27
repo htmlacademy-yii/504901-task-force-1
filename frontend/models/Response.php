@@ -7,16 +7,15 @@ use Yii;
 /**
  * This is the model class for table "response".
  *
- * @property int $id_response
+ * @property int $id
  * @property string $date_add
  * @property int|null $cost
- * @property int $id_task
- * @property int $id_user
- * @property int|null $mark
- * @property int|null $performed
+ * @property int $task_id
+ * @property int $user_id
+ * @property int|null $canceled
  * @property string|null $message
  *
- * @property Profile $user
+ * @property User $user
  * @property Task $task
  */
 class Response extends \yii\db\ActiveRecord
@@ -36,11 +35,11 @@ class Response extends \yii\db\ActiveRecord
     {
         return [
             [['date_add'], 'safe'],
-            [['cost', 'id_task', 'id_user', 'mark', 'performed'], 'integer'],
-            [['id_task', 'id_user'], 'required'],
+            [['cost', 'task_id', 'user_id', 'canceled'], 'integer'],
+            [['task_id', 'user_id'], 'required'],
             [['message'], 'string'],
-            [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::className(), 'targetAttribute' => ['id_user' => 'id_user']],
-            [['id_task'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['id_task' => 'id_task']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -50,13 +49,12 @@ class Response extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_response' => 'Id Response',
+            'id' => 'ID',
             'date_add' => 'Date Add',
             'cost' => 'Cost',
-            'id_task' => 'Id Task',
-            'id_user' => 'Id User',
-            'mark' => 'Mark',
-            'performed' => 'Performed',
+            'task_id' => 'Task ID',
+            'user_id' => 'User ID',
+            'canceled' => 'Canceled',
             'message' => 'Message',
         ];
     }
@@ -68,7 +66,7 @@ class Response extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Profile::className(), ['id_user' => 'id_user']);
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
@@ -78,6 +76,6 @@ class Response extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id_task' => 'id_task']);
+        return $this->hasOne(Task::className(), ['id' => 'task_id']);
     }
 }

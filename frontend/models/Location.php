@@ -5,22 +5,24 @@ namespace frontend\models;
 use Yii;
 
 /**
- * This is the model class for table "file".
+ * This is the model class for table "location".
  *
  * @property int $id
+ * @property string $address
+ * @property float $latitude
+ * @property float $longitude
  * @property int $task_id
- * @property string|null $name
  *
  * @property Task $task
  */
-class File extends \yii\db\ActiveRecord
+class Location extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'file';
+        return 'location';
     }
 
     /**
@@ -29,9 +31,10 @@ class File extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['task_id'], 'required'],
+            [['address', 'latitude', 'longitude', 'task_id'], 'required'],
+            [['latitude', 'longitude'], 'number'],
             [['task_id'], 'integer'],
-            [['name'], 'string', 'max' => 255],
+            [['address'], 'string', 'max' => 255],
             [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
@@ -43,8 +46,10 @@ class File extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'address' => 'Address',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
             'task_id' => 'Task ID',
-            'name' => 'Name',
         ];
     }
 

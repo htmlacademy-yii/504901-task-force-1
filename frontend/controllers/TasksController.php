@@ -6,6 +6,7 @@ use frontend\models\FilterTasksForm;
 use frontend\models\Task;
 use Yii;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 /**
  * Tasks Controller
@@ -19,18 +20,21 @@ class TasksController extends Controller
     {
         $filter = new FilterTasksForm();
         $query = Task::find()
-            ->with('category', 'city')
-            ->where(['status' => Task::STATUS_NEW])
+            ->joinWith('category')
+            ->where(['status_id' => Task::STATUS_NEW])
             ->orderBy(['date_of_creation' => SORT_DESC]);
-        if (Yii::$app->request->getIsPost()) {
-
-            $filter->load(Yii::$app->request->post());
+     
+            $filter->load(Yii::$app->request->get());
             if ($filter->withoutResponse) {
-                $query->joinWith('responses');
-                $query->andWhere(['response.id_task' => null]);
+                $query->join('LEFT JOIN', 'response', 'response.task_id = task.id');
+                $query->andWhere(['task_id' => null]);
             }
             if ($filter->categories) {
-                $query->andWhere(['id_category' => $filter->categories]);
+                $categories = [];
+                foreach($filter->categories as $category) {
+                    $categories[] = $category + 1;
+                }
+                $query->andWhere(['in', 'category_id', $categories]);
             }
             if ($filter->remoteWork) {
                 $query->andWhere(['address' => null]);
@@ -40,7 +44,7 @@ class TasksController extends Controller
             }
             switch ($filter->period) {
                 case 'day':
-                    $query->andWhere(['>=', 'date_of_creation', date("Y-m-d H:i:s", strtotime("-1 day"))]);
+                    $query->andWhere(['>=', 'date_of_creation', date("Y-m-d", strtotime("-1 day"))]);
                     break;
                 case 'week':
                     $query->andWhere(['>=', 'date_of_creation', date("Y-m-d H:i:s", strtotime("-1 week"))]);
@@ -48,12 +52,20 @@ class TasksController extends Controller
                 case 'month':
                     $query->andWhere(['>=', 'date_of_creation', date("Y-m-d H:i:s", strtotime("-1 month"))]);
                     break;
-            }
-        }
+            };
         $tasks = $query->all();
         return $this->render('index', [
             'tasks' => $tasks,
             'filter' => $filter,
         ]);
+    }
+
+    public function actionView($id)
+    {
+        $task = Task::findOne($id);
+        if (!$task) {
+            throw new NotFoundHttpException("Задания с id $id не существует");
+        }
+        return $this->render('view',['task' => $task]);
     }
 }
