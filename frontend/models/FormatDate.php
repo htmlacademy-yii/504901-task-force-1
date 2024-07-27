@@ -8,6 +8,7 @@ class FormatDate
     const MINUTE = 60;
     const HOUR = 60 * self::MINUTE;
     const DAY = 24 * self::HOUR;
+    const YEAR = SELF::DAY * 365;
 
     private static function caseDays($days)
     {
@@ -67,7 +68,6 @@ class FormatDate
 
     public static function dateDiff($dt)
     {
-        date_default_timezone_set('Asia/Yekaterinburg');
         $diff_unix = time() - strtotime($dt);
         $days = intval($diff_unix / self::DAY);
         $hours = intval(($diff_unix % self::DAY) / self::HOUR);
@@ -88,4 +88,28 @@ class FormatDate
         }
 
     }
+
+    public static function age($dt)
+    {
+        if ($dt) {
+            $diff = round((time() - strtotime($dt)) / SELF::YEAR, 0);
+            $case = " лет";
+            if ($diff % 100 < 10 || $diff % 100 > 20) {
+                switch ($diff % 10) {
+                    case 1:
+                        $case = " год";
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        $case = " года";
+                        break;
+                }
+            }
+            return strval($diff).$case;
+        }
+        return "";
+
+    }
+
 }

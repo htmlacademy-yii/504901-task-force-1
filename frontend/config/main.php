@@ -10,6 +10,8 @@ return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'sourceLanguage' => 'ru-Ru',
+    'timeZone' => 'Asia/Yekaterinburg',
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'request' => [
@@ -41,8 +43,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'users/view/<id:\d+>' => 'users/view',
-                'tasks/view/<id:\d+>' => 'tasks/view'
+                'user/view/<id:\d+>' => 'users/view',
+                'task/view/<id:\d+>' => 'tasks/view'
             ],
         ],
 

@@ -16,6 +16,9 @@ use Yii;
  * @property string|null $date_of_completion
  * @property int|null $budget
  * @property int $owner_id
+ * @property string|null $address
+ * @property float|null $latitude
+ * @property float|null $longitude
  *
  * @property ExecutorTask[] $executorTasks
  * @property File[] $files
@@ -51,7 +54,8 @@ class Task extends \yii\db\ActiveRecord
             [['status_id', 'name_task', 'category_id', 'description', 'owner_id'], 'required'],
             [['status_id', 'category_id', 'budget', 'owner_id'], 'integer'],
             [['description'], 'string'],
-            [['name_task'], 'string', 'max' => 255],
+            [['latitude', 'longitude'], 'number'],
+            [['name_task', 'address'], 'string', 'max' => 255],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status_id' => 'id']],
             [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['owner_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
@@ -73,6 +77,9 @@ class Task extends \yii\db\ActiveRecord
             'date_of_completion' => 'Date Of Completion',
             'budget' => 'Budget',
             'owner_id' => 'Owner ID',
+            'address' => 'Address',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
         ];
     }
 
@@ -146,13 +153,4 @@ class Task extends \yii\db\ActiveRecord
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
-    /**
-     * Gets query for [[Locations]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLocations()
-    {
-        return $this->hasMany(Location::className(), ['task_id' => 'id']);
-    }
 }

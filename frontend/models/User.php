@@ -33,9 +33,11 @@ use Yii;
  *
  * @property ExecutorTask[] $executorTasks
  * @property Response[] $responses
+ * @property Review[] $reviews 
  * @property Specialization[] $specializations
  * @property Task[] $tasks
  * @property City $city
+ * @property Work[] $works 
  */
 class User extends \yii\db\ActiveRecord
 {
@@ -123,6 +125,16 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
+    * Gets query for [[Reviews]]. 
+    * 
+    * @return \yii\db\ActiveQuery 
+    */ 
+   public function getReviews() 
+   { 
+       return $this->hasMany(Review::className(), ['user_id' => 'id']); 
+   } 
+   
+    /**
      * Gets query for [[Specializations]].
      *
      * @return \yii\db\ActiveQuery
@@ -151,4 +163,14 @@ class User extends \yii\db\ActiveRecord
     {
         return $this->hasOne(City::className(), ['id' => 'city_id']);
     }
+
+    /** 
+    * Gets query for [[Works]]. 
+    * 
+    * @return \yii\db\ActiveQuery 
+    */ 
+   public function getWorks() 
+   { 
+       return $this->hasMany(Work::className(), ['user_id' => 'id']); 
+   } 
 }

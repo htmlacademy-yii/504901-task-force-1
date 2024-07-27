@@ -25,10 +25,10 @@ class FilterTasksForm extends Model
     public function attributeLabelsPeriod()
     {
         return [
+            'all' => 'За всё время',
             'day' => 'За день',
             'week' => 'За неделю',
             'month' => 'За месяц',
-            'all' => 'За всё время',
         ];
     }
 
