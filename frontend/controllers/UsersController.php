@@ -9,6 +9,7 @@ use frontend\models\User;
 use frontend\models\Specialization;
 use Yii;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 /**
  * Users Controller
