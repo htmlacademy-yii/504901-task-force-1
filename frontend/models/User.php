@@ -43,6 +43,7 @@ class User extends \yii\db\ActiveRecord
 {
     const CUSTOMER = 'customer';
     const EXECUTOR = 'executor';
+    
     /**
      * {@inheritdoc}
      */
@@ -63,12 +64,16 @@ class User extends \yii\db\ActiveRecord
             [['city_id', 'new_message', 'actions', 'new_review', 'show_contact', 'show_profile', 'count_tasks', 'count_views', 'count_fail'], 'integer'],
             [['rating'], 'number'],
             [['email'], 'string', 'max' => 128],
-            [['password', 'avatar'], 'string', 'max' => 255],
-            [['name', 'skype', 'telegram'], 'string', 'max' => 50],
-            [['phone'], 'string', 'max' => 11],
+            [['avatar'], 'string', 'max' => 255],
+            [['password'], 'string', 'min' => 8, 'message' => "Длина пароля от 8 символов"],
+            [['skype', 'telegram'], 'string', 'max' => 50],
+            ['phone', 'match', 'pattern' => '/^[\d]{11}/i'],
             [['role'], 'string', 'max' => 10],
+            ['email', 'email', 'message' => "Введите валидный адрес электронной почты"],
             [['email'], 'unique'],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['name'], 'string', 'max' => 50, 'message' => "Введите ваше имя и фамилию"],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id'], 
+                'message' => "Укажите город, чтобы находить подходящие задачи"],
         ];
     }
 
@@ -80,8 +85,8 @@ class User extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'email' => 'Email',
-            'password' => 'Password',
-            'name' => 'Name',
+            'password' => 'Пароль',
+            'name' => 'Имя',
             'date_of_registration' => 'Date Of Registration',
             'avatar' => 'Avatar',
             'birthday' => 'Birthday',
@@ -89,7 +94,7 @@ class User extends \yii\db\ActiveRecord
             'phone' => 'Phone',
             'skype' => 'Skype',
             'telegram' => 'Telegram',
-            'city_id' => 'City ID',
+            'city_id' => 'Город проживания',
             'new_message' => 'New Message',
             'actions' => 'Actions',
             'new_review' => 'New Review',
@@ -172,5 +177,13 @@ class User extends \yii\db\ActiveRecord
    public function getWorks() 
    { 
        return $this->hasMany(Work::className(), ['user_id' => 'id']); 
-   } 
+   }  
+
+   public function beforeSave($insert) {
+   if ($this->isAttributeChanged('password')) {
+    $this->password = Yii::$app->getSecurity()->generatePasswordHash($this->password);
+   }
+   return parent::beforeSave($insert);
+    
+   }
 }
