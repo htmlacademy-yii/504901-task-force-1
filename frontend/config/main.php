@@ -9,16 +9,26 @@ $params = array_merge(
 return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
+    'layout' => 'common',
     'bootstrap' => ['log'],
     'language' => 'ru-Ru',
     'timeZone' => 'Asia/Yekaterinburg',
     'controllerNamespace' => 'frontend\controllers',
+    'defaultRoute' => 'landing',
+    'modules' => [
+        'api' => [
+            'class' => 'frontend\modules\api\Module'
+        ]
+    ],
     'components' => [
         'request' => [
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'frontend\models\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -36,7 +46,7 @@ return [
             ],
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'landing/error',
         ],
 
         'urlManager' => [
@@ -50,4 +60,4 @@ return [
 
     ],
     'params' => $params,
-];
+]; 

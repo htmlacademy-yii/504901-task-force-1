@@ -1,58 +1,81 @@
-var openModalLinks = document.getElementsByClassName("open-modal");
-var closeModalLinks = document.getElementsByClassName("form-modal-close");
-var overlay = document.getElementsByClassName("overlay")[0];
 
-for (var i = 0; i < openModalLinks.length; i++) {
-  var modalLink = openModalLinks[i];
-
-  modalLink.addEventListener("click", function (event) {
-    var modalId = event.currentTarget.getAttribute("data-for");
-
-    var modal = document.getElementById(modalId);
-    modal.setAttribute("style", "display: block");
-    overlay.setAttribute("style", "display: block");
-
-  });
+function handleFormSubmit(event) {
+    // Просим форму не отправлять данные самостоятельно
+    event.preventDefault()
+    $.ajax({
+        url: "landing/login",
+        type: "POST",
+        data: "email=" + $("#loginform-email").val() + "&password=" + $("#loginform-password").val(),
+        success: function (answer) {
+            alert("ok");
+        }
+    });
 }
+// const applicantForm = document.getElementById('login-form-submit')
+// applicantForm.addEventListener('click', handleFormSubmit)
+// var openModalLinks = document.getElementsByClassName("open-modal");
+// var closeModalLinks = document.getElementsByClassName("form-modal-close");
+// var overlay = document.getElementsByClassName("overlay")[0];
 
-function closeModal(event) {
-  var modal = event.currentTarget.parentElement;
+// for (var i = 0; i < openModalLinks.length; i++) {
+//   var modalLink = openModalLinks[i];
 
-  modal.removeAttribute("style");
-  overlay.removeAttribute("style");
-}
+//   modalLink.addEventListener("click", function (event) {
+//     var modalId = event.currentTarget.getAttribute("data-for");
 
-for (var j = 0; j < closeModalLinks.length; j++) {
-  var closeModalLink = closeModalLinks[j];
+// var modal = document.getElementById('login-modal');
+// modal.setAttribute("style", "display: block");
+//overlay.setAttribute("style", "display: block");
+// $.ajax({
+//   url:"landing/ajaxLogin",
+//   type:"POST",
+//   //data:"login_user="+$("#loginform-login_user").val()+"&password_user="+$("#loginform-password_user").val(),
+//   success:function(answer){
+//     alert(answer);
+//   }
+// });
 
-  closeModalLink.addEventListener("click", closeModal)
-}
+//   });
+// }
 
-document.getElementById('close-modal').addEventListener("click", closeModal);
+// function closeModal(event) {
+//   var modal = event.currentTarget.parentElement;
 
-var starRating = document.getElementsByClassName("completion-form-star");
+//   modal.removeAttribute("style");
+//   overlay.removeAttribute("style");
+// }
 
-if (starRating.length) {
-  starRating = starRating[0];
+// for (var j = 0; j < closeModalLinks.length; j++) {
+//   var closeModalLink = closeModalLinks[j];
 
-  starRating.addEventListener("click", function(event) {
-    var stars = event.currentTarget.childNodes;
-    var rating = 0;
+//   closeModalLink.addEventListener("click", closeModal)
+// }
 
-    for (var i = 0; i < stars.length; i++) {
-      var element = stars[i];
+// document.getElementById('close-modal').addEventListener("click", closeModal);
 
-      if (element.nodeName === "SPAN") {
-        element.className = "";
-        rating++;
-      }
+// var starRating = document.getElementsByClassName("completion-form-star");
 
-      if (element === event.target) {
-        break;
-      }
-    }
+// if (starRating.length) {
+//   starRating = starRating[0];
 
-    var inputField = document.getElementById("rating");
-    inputField.value = rating;
-  });
-}
+//   starRating.addEventListener("click", function(event) {
+//     var stars = event.currentTarget.childNodes;
+//     var rating = 0;
+
+//     for (var i = 0; i < stars.length; i++) {
+//       var element = stars[i];
+
+//       if (element.nodeName === "SPAN") {
+//         element.className = "";
+//         rating++;
+//       }
+
+//       if (element === event.target) {
+//         break;
+//       }
+//     }
+
+//     var inputField = document.getElementById("rating");
+//     inputField.value = rating;
+//   });
+// }
