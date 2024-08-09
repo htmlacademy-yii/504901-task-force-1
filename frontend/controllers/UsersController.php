@@ -14,7 +14,7 @@ use yii\web\NotFoundHttpException;
 /**
  * Users Controller
  */
-class UsersController extends Controller
+class UsersController extends SecuredController
 {
     const MINUTES30 = "-30 minute";
 
@@ -84,5 +84,11 @@ class UsersController extends Controller
             throw new NotFoundHttpException("Задания с id $id не существует");
         }
         return $this->render('view',['user' => $user]);
+    }
+
+    public function actionLogout() {
+        \Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 }

@@ -1,4 +1,7 @@
 @charset "UTF-8";
+#login-form {
+    margin:2rem;
+}
 body {
     font-family: 'PT Sans', sans-serif;
     font-weight: 400;
