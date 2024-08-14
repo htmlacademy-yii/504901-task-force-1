@@ -1,23 +1,50 @@
 <?php
 
 namespace frontend\controllers;
+use yii\bootstrap5\ActiveForm;
 
 use frontend\models\FilterTasksForm;
 use frontend\models\Task;
+use frontend\models\User;
+use frontend\models\Category;
+use frontend\models\File;
+use yii\web\UploadedFile;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\helpers\FileHelper;
 
 /**
  * Tasks Controller
  */
 class TasksController extends SecuredController
 {
+    // public function behaviors()
+    // {
+    //     $rules = parent::behaviors();
+    //     $rule = [
+    //         'allow' => true,
+    //         'actions' => ['create'],
+    //         'roles' => ['@'],
+    //         'matchCallback' => function () {
+    //            return Yii::$app->user->identity->isExecutor();
+    //         },
+    //         'denyCallback'  => function () {
+    //             return Yii::$app->getResponse()->redirect(['/tasks']);
+    //         }, 
+    //     ];
+
+    //     array_unshift($rules['access']['rules'], $rule);
+
+    //     return $rules;
+    // }
+
     /**
      * @return mixed
      */
     public function actionIndex()
     {
+        $this->changeActivity();
         $filter = new FilterTasksForm();
         $query = Task::find()
             ->joinWith('category')
@@ -67,5 +94,49 @@ class TasksController extends SecuredController
             throw new NotFoundHttpException("Задания с id $id не существует");
         }
         return $this->render('view',['task' => $task]);
+    }
+
+    public function changeActivity(){
+        $user = User::findOne(Yii::$app->user->identity->id);
+        $user->date_activity=(new \DateTime())->format( 'Y-m-d H:i:s' );;
+        $user->save();
+    }
+
+    public function actionCreate()
+    {
+        if (!Yii::$app->user->identity->isExecutor()) {
+            return Yii::$app->getResponse()->redirect(['/tasks']);
+        };
+        $model = new Task();
+        $model->owner_id = Yii::$app->user->id;
+        $model->status_id = Task::STATUS_NEW;
+        $categories = Category::find()->all();
+
+        if($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+                if ($model->upload() && $model->save(false)) {
+                    // file is uploaded successfully
+                    foreach ($model->imageFiles as $file) {
+                        $file = 'uploads/' . $file->baseName . '.' . $file->extension;
+                        $image = new File();
+                        $image->task_id = $model->id;
+                        $image->name = $file;
+                        $image->save();
+                    }
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                // else {
+                //     $model->errors = $model->getErrors();
+                //     var_dump($model->errors);
+                //}
+            } 
+            
+            
+        }
+        return $this->render('create', [
+            'model' => $model,
+            'categories' => $categories,
+        ]);
     }
 }

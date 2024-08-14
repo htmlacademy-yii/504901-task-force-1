@@ -1,15 +1,12 @@
-
-function handleFormSubmit(event) {
-    // Просим форму не отправлять данные самостоятельно
-    event.preventDefault()
-    $.ajax({
-        url: "landing/login",
-        type: "POST",
-        data: "email=" + $("#loginform-email").val() + "&password=" + $("#loginform-password").val(),
-        success: function (answer) {
-            alert("ok");
-        }
-    });
+function getErrors() {
+    const errors = document.querySelectorAll('.invalid-feedback')
+    const itemError = document.querySelector('#item-error')
+    itemError.innerHTML = "";
+    for (let error of errors) {
+      if (error.innerText) {
+        itemError.innerText += error.innerText + "\n"
+      }; 
+    }
 }
 // const applicantForm = document.getElementById('login-form-submit')
 // applicantForm.addEventListener('click', handleFormSubmit)

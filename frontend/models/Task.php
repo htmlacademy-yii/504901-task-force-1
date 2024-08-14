@@ -35,6 +35,9 @@ class Task extends \yii\db\ActiveRecord
     const STATUS_IN_WORK = 3;
     const STATUS_PERFORMED = 4;
     const STATUS_FAILED = 5;
+
+    public $imageFiles;
+    public $errors;
     
     /**
      * {@inheritdoc}
@@ -50,12 +53,12 @@ class Task extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date_of_creation', 'date_of_completion'], 'safe'],
+            [['date_of_creation', 'date_of_completion', 'budget', 'latitude', 'longitude', 'address', 'imageFiles', 'errors' ], 'safe'],
             [['status_id', 'name_task', 'category_id', 'description', 'owner_id'], 'required'],
-            [['status_id', 'category_id', 'budget', 'owner_id'], 'integer'],
-            [['description'], 'string'],
-            [['latitude', 'longitude'], 'number'],
-            [['name_task', 'address'], 'string', 'max' => 255],
+            [['status_id', 'category_id', 'owner_id'], 'integer'],
+            [['description'], 'string', 'min' => 30],
+            [['name_task'], 'string', 'min' => 10, 'max' => 255],
+            [['imageFiles'], 'file', 'skipOnEmpty' => true],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status_id' => 'id']],
             [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['owner_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
@@ -71,15 +74,16 @@ class Task extends \yii\db\ActiveRecord
             'id' => 'ID',
             'date_of_creation' => 'Date Of Creation',
             'status_id' => 'Status ID',
-            'name_task' => 'Name Task',
-            'category_id' => 'Category ID',
-            'description' => 'Description',
-            'date_of_completion' => 'Date Of Completion',
-            'budget' => 'Budget',
+            'name_task' => 'Название задание',
+            'category_id' => 'Категория',
+            'description' => 'Описание',
+            'date_of_completion' => 'Дата завершения',
+            'budget' => 'Бюджет',
             'owner_id' => 'Owner ID',
-            'address' => 'Address',
+            'address' => 'Локация',
             'latitude' => 'Latitude',
             'longitude' => 'Longitude',
+            'imageFiles' => 'Файлы'
         ];
     }
 
@@ -153,4 +157,17 @@ class Task extends \yii\db\ActiveRecord
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
+    public function upload()
+    {
+        if ($this->validate()) { 
+            foreach ($this->imageFiles as $file) {
+                $file->saveAs('uploads/' . $file->baseName . '.' . $file->extension);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+   
 }

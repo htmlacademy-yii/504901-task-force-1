@@ -2,7 +2,7 @@
 
 namespace frontend\models;
 
-use Yii;
+use yii\db\Command;
 
 
 /**
@@ -222,4 +222,12 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
    return parent::beforeSave($insert);
     
    }
+
+   public function isExecutor() {
+    if (isset($this->specializations[0])){
+       return false;
+    }
+    return true;
+   }
+
 }
