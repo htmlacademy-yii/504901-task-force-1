@@ -1,6 +1,7 @@
 <?php
 
 use frontend\models\FormatDate;
+use yii\helpers\Url;
 
 ?>
 <main class="page-main">
@@ -29,8 +30,9 @@ use frontend\models\FormatDate;
                     </div>
                     <div class="content-view__attach">
                         <h3 class="content-view__h3">Вложения</h3>
-                        <a href="#">my_picture.jpeg</a>
-                        <a href="#">agreement.docx</a>
+                        <?php foreach($task->files as $file):?>
+                        <a href='<?=Url::to("/$file->name");?>'><?=str_replace('uploads/', '', $file->name)?></a>
+                        <?php endforeach;?>
                     </div>
                     <div class="content-view__location">
                         <h3 class="content-view__h3">Расположение</h3>

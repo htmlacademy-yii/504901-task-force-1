@@ -54,10 +54,15 @@ return [
             'showScriptName' => false,
             'rules' => [
                 'user/view/<id:\d+>' => 'users/view',
-                'task/view/<id:\d+>' => 'tasks/view'
+                'task/view/<id:\d+>' => 'tasks/view',
+                'task/create' => 'tasks/create'
             ],
         ],
-
+        'on beforeAction' => function(){
+           if(!Yii::$app->user->isGuest){
+                \frontend\models\User::updateAll(['date_activity'=>(new \DateTime())->format( 'Y-m-d H:i:s' )],['id'=>Yii::$app->user->id]);
+            }
+        },
     ],
     'params' => $params,
 ]; 
