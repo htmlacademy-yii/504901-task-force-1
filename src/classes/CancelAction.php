@@ -45,7 +45,7 @@ class CancelAction extends AbstractAction
             return false;
         }
 
-        if (isset($task->executorTasks)) {
+        if (isset($task->executor_id)) {
             return false;
         }
 

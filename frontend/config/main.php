@@ -60,7 +60,7 @@ return [
                 'task/response/<id:\d+>' => 'tasks/response',
                 'task/accept/<id:\d+>/<user:\d+>' => 'tasks/accept',
                 'task/refuse/<id:\d+>/<user:\d+>' => 'tasks/refuse',
-                'task/failed/<id:\d+>/<user:\d+>' => 'tasks/failed',
+                'task/failed/<id:\d+>' => 'tasks/failed',
                 'task/create' => 'tasks/create'
             ],
         ],

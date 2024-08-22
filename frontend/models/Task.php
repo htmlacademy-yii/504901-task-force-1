@@ -20,7 +20,6 @@ use Yii;
  * @property float|null $latitude
  * @property float|null $longitude
  *
- * @property ExecutorTask[] $executorTasks
  * @property File[] $files
  * @property Response[] $responses
  * @property Review[] $reviews
@@ -91,16 +90,6 @@ class Task extends \yii\db\ActiveRecord
             'imageFiles' => 'Файлы',
             'cost' => 'Ваша цена'
         ];
-    }
-
-    /**
-     * Gets query for [[ExecutorTasks]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getExecutorTasks()
-    {
-        return $this->hasMany(ExecutorTask::className(), ['task_id' => 'id']);
     }
 
     /**

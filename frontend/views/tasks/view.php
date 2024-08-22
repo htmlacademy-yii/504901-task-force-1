@@ -147,6 +147,7 @@ $this->registerJsFile('@web/js/actions.js');
         </section>
     </div>
 </main>
+
 <?php Modal::begin([
     'title' => 'Отмена задания',
     'id' => 'cancelModal',
@@ -212,6 +213,5 @@ $this->registerJsFile('@web/js/actions.js');
             Вы уверены?
         </p>
         <a href="<?= Url::to(['/task/view/' . $task->id]); ?>" class="button button--pop-up button--orange button--submit">Отмена</a>
-        <!-- <?= Html::resetButton('Отмена', ['class' => 'reset class="button button--pop-up button--orange button--submit"']) ?> -->
-        <a href="<?= Url::to(['/task/failed/' . $task->id . '/' . Yii::$app->user->identity->id]); ?>" class="button button--pop-up button--orange button--submit">Отказаться</a>
+        <a href="<?= Url::to(['/task/failed/' . $task->id]); ?>" class="button button--pop-up button--orange button--submit">Отказаться</a>
 <?php Modal::end();?>

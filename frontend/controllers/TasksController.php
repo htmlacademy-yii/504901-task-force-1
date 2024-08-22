@@ -9,7 +9,6 @@ use frontend\models\User;
 use frontend\models\Category;
 use frontend\models\Review;
 use frontend\models\Response;
-use frontend\models\ExecutorTask;
 use frontend\models\File;
 use yii\web\UploadedFile;
 use Yii;
@@ -213,12 +212,8 @@ class TasksController extends SecuredController
             throw new NotFoundHttpException("Задания с id $id не существует");
         }
         $task->status_id = Task::STATUS_IN_WORK;
+        $task->executor_id = $user;
         $task->save(false);
-        $accept = new ExecutorTask();
-        $accept->task_id = $id;
-        $accept->executor_id = $user;
-        $accept->status_id = Task::STATUS_IN_WORK;
-        $accept->save();
         return $this->redirect(['index']);
             
     }
@@ -234,7 +229,7 @@ class TasksController extends SecuredController
         return $this->refresh();
     }
 
-    public function actionFailed($id, $user)
+    public function actionFailed($id)
     {
         $task = Task::findOne($id);
         if (!$task) {
@@ -242,15 +237,6 @@ class TasksController extends SecuredController
         }
         $task->status_id = Task::STATUS_FAILED;
         $task->save(false);
-        $executor = ExecutorTask::find()
-        ->where(['task_id' => $id])
-        ->andWhere(['executor_id' => $user])
-        ->one();;
-        if (!$executor) {
-            throw new NotFoundHttpException("Исполнителя для задания с id $id не существует");
-        }
-        $executor->status_id = Task::STATUS_FAILED;
-        $executor->save(false);
         return $this->redirect(['index']);
     }
 }
