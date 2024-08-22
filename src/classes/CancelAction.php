@@ -1,7 +1,10 @@
 <?php
 
-
 namespace taskForce\classes;
+
+use frontend\models\Task;
+use taskForce\task\TaskActions;
+use taskForce\task\TaskStatuses;
 
 
 class CancelAction extends AbstractAction
@@ -31,14 +34,22 @@ class CancelAction extends AbstractAction
 
     /**
      * проверка прав текущего пользователя
-     * @param integer $id_customer Идентификатор заказчика
-     * @param integer $id_executor Идентификатор исполнителя
      * @param integer $id_user Идентификатор текущего пользователя
+     * @param Tasks $task Текущая задача
      * @return bool Доступность действия
      */
-    static function verify(int $id_customer, int $id_executor, int $id_user): bool
+    static function verify(Tasks $task, int $userId): bool
     {
 
-        return $id_user === $id_customer;
+        if ($task->status_id !== TaskStatuses::STATUS_NEW) {
+            return false;
+        }
+
+        if (isset($task->executorTasks)) {
+            return false;
+        }
+
+        return $userId === $task->owner_id;
+        
     }
 }

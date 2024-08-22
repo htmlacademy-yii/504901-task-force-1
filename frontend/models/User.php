@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use yii\db\Command;
+use Yii;
 
 
 /**
