@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use yii\db\Command;
+use Yii;
 
 
 /**
@@ -32,7 +33,6 @@ use yii\db\Command;
  * @property string $date_activity
  * @property string|null $role
  *
- * @property ExecutorTask[] $executorTasks
  * @property Response[] $responses
  * @property Review[] $reviews 
  * @property Specialization[] $specializations
@@ -143,16 +143,6 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'date_activity' => 'Date Activity',
             'role' => 'Role',
         ];
-    }
-
-    /**
-     * Gets query for [[ExecutorTasks]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getExecutorTasks()
-    {
-        return $this->hasMany(ExecutorTask::className(), ['executor_id' => 'id']);
     }
 
     /**

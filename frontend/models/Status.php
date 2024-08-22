@@ -11,7 +11,6 @@ use Yii;
  * @property string|null $name
  * @property string|null $translation
  *
- * @property ExecutorTask[] $executorTasks
  * @property Task[] $tasks
  */
 class Status extends \yii\db\ActiveRecord
@@ -44,16 +43,6 @@ class Status extends \yii\db\ActiveRecord
             'name' => 'Name',
             'translation' => 'Translation',
         ];
-    }
-
-    /**
-     * Gets query for [[ExecutorTasks]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getExecutorTasks()
-    {
-        return $this->hasMany(ExecutorTask::className(), ['status_id' => 'id']);
     }
 
     /**

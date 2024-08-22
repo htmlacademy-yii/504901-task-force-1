@@ -34,9 +34,11 @@ use yii\widgets\Pjax;
                         </div>
                         
                         <!-- <label for="13">Локация</label> -->
-                        <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
+                        <?= $form->field($model, 'address')->textInput(['maxlength' => true, 'class' => 'form-control input-navigation input-middle']) ?>
                         <!-- <input class="input-navigation input-middle input" id="13" type="search" name="q" placeholder="Санкт-Петербург, Калининский район"> -->
                         <span>Укажите адрес исполнения, если задание требует присутствия</span>
+                        <?= $form->field($model, 'latitude')->hiddenInput()->label(false) ?>
+                        <?= $form->field($model, 'longitude')->hiddenInput()->label(false) ?>
                         <div class="create__price-time">
                             <div class="create__price-time--wrapper">
                                 <!-- <label for="14">Бюджет</label> -->
@@ -45,8 +47,9 @@ use yii\widgets\Pjax;
                                 <span>Не заполняйте для оценки исполнителем</span>
                             </div>
                             <div class="create__price-time--wrapper">
-                                <?= $form->field($model, 'date_of_completion')->textInput(['class' => 'form-control input-middle input-date','type' => 'date', 'placeholder' => '10.11, 15:00'])
+                                <?= $form->field($model, 'date_of_completion')->textInput(['class' => 'form-control input-middle input-date','type' => 'date', 'placeholder' => '10.11, 15:00', 'minDate' => (new \DateTime('now', new \DateTimeZone('Asia/Yekaterinburg')))->format('Y-m-d')])
                                  ->label('Срок исполнения'); ?>
+                                 
                                 <span>Укажите крайний срок исполнения</span>
                             </div>
                         </div>

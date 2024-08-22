@@ -1394,6 +1394,47 @@ footer {
     margin-bottom: 5px;
 }
 
+.stars-rating {
+    display: flex;
+  }
+  
+  .stars-rating span {
+    position: relative; }
+  
+  .stars-rating span::before {
+    position: absolute;
+    content: "";
+    background-image: url("/img/star-empty.svg");
+    background-size: 25px;
+    background-position: center;
+    background-repeat: no-repeat;
+    top: 0;
+    left: 0; }
+  
+  .big {
+    margin-right: 10px; }
+  
+  .big span {
+    padding-left: 11px;
+    padding-right: 6px; }
+  
+  .big span::before {
+    width: 25px;
+    height: 25px; }
+  
+  .small span {
+    margin-top: 5px;
+    padding-left: 7px;
+    padding-right: 3px; }
+  
+  .small span::before {
+    background-size: 18px;
+    width: 18px;
+    height: 28px; }
+  
+  .stars-rating .stars-rating__star--fill::before {
+    background-image: url("../img/star-fill.svg"); }
+
 .five-stars__rate span {
     display: inline-block;
     background-image: url("../img/big-star.png");

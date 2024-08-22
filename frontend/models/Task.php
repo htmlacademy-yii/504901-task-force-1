@@ -20,7 +20,6 @@ use Yii;
  * @property float|null $latitude
  * @property float|null $longitude
  *
- * @property ExecutorTask[] $executorTasks
  * @property File[] $files
  * @property Response[] $responses
  * @property Review[] $reviews
@@ -38,6 +37,10 @@ class Task extends \yii\db\ActiveRecord
 
     public $imageFiles;
     public $errors;
+    public $radio;
+    public $comment;
+    public $mark;
+    public $cost;
     
     /**
      * {@inheritdoc}
@@ -53,10 +56,11 @@ class Task extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date_of_creation', 'date_of_completion', 'budget', 'latitude', 'longitude', 'address', 'imageFiles', 'errors' ], 'safe'],
+            [['date_of_creation', 'date_of_completion', 'budget', 'latitude', 'longitude', 'address', 'comment', 'imageFiles', 'errors', 'radio' ], 'safe'],
             [['status_id', 'name_task', 'category_id', 'description', 'owner_id'], 'required'],
-            [['status_id', 'category_id', 'owner_id'], 'integer'],
+            [['status_id', 'category_id', 'owner_id', 'cost'], 'integer'],
             [['description'], 'string', 'min' => 30],
+            [['mark'], 'integer', 'min' => 1, 'max' => 5],
             [['name_task'], 'string', 'min' => 10, 'max' => 255],
             [['imageFiles'], 'file', 'skipOnEmpty' => true],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status_id' => 'id']],
@@ -77,24 +81,15 @@ class Task extends \yii\db\ActiveRecord
             'name_task' => 'Название задание',
             'category_id' => 'Категория',
             'description' => 'Описание',
-            'date_of_completion' => 'Дата завершения',
+            'date_of_completion' => 'Срок исполнения',
             'budget' => 'Бюджет',
             'owner_id' => 'Owner ID',
             'address' => 'Локация',
             'latitude' => 'Latitude',
             'longitude' => 'Longitude',
-            'imageFiles' => 'Файлы'
+            'imageFiles' => 'Файлы',
+            'cost' => 'Ваша цена'
         ];
-    }
-
-    /**
-     * Gets query for [[ExecutorTasks]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getExecutorTasks()
-    {
-        return $this->hasMany(ExecutorTask::className(), ['task_id' => 'id']);
     }
 
     /**
@@ -168,6 +163,5 @@ class Task extends \yii\db\ActiveRecord
             return false;
         }
     }
-
-   
+ 
 }

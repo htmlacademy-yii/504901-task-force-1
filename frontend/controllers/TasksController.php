@@ -7,6 +7,8 @@ use frontend\models\FilterTasksForm;
 use frontend\models\Task;
 use frontend\models\User;
 use frontend\models\Category;
+use frontend\models\Review;
+use frontend\models\Response;
 use frontend\models\File;
 use yii\web\UploadedFile;
 use Yii;
@@ -93,7 +95,17 @@ class TasksController extends SecuredController
         if (!$task) {
             throw new NotFoundHttpException("Задания с id $id не существует");
         }
-        return $this->render('view',['task' => $task]);
+        $responses = [];
+        if (!Yii::$app->user->identity->isExecutor()) {
+            foreach($task->responses as $response) {
+                if ($response->user_id === Yii::$app->user->id) {
+                    $responses[] = $response;
+                }
+            }
+        } else {
+            $responses = $task->responses;
+        }
+        return $this->render('view',['task' => $task, 'responses' => $responses]);
     }
 
     public function changeActivity(){
@@ -126,10 +138,6 @@ class TasksController extends SecuredController
                     }
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
-                // else {
-                //     $model->errors = $model->getErrors();
-                //     var_dump($model->errors);
-                //}
             } 
             
             
@@ -138,5 +146,97 @@ class TasksController extends SecuredController
             'model' => $model,
             'categories' => $categories,
         ]);
+    }
+
+    public function actionCancel($id)
+    {
+        $task = Task::findOne($id);
+        if (!$task) {
+            throw new NotFoundHttpException("Задания с id $id не существует");
+        }
+        $task->status_id = Task::STATUS_CANCELED;
+        $task->save(false);
+        return $this->redirect(['index']);
+    }
+
+    public function actionPerformed($id)
+    {
+        $task = Task::findOne($id);
+        if (!$task) {
+            throw new NotFoundHttpException("Задания с id $id не существует");
+        }
+        if($this->request->isPost) {
+            if ($task->load($this->request->post())) {
+                if ($task->radio === "yes") {
+                    $task->status_id = Task::STATUS_PERFORMED;
+                } else {
+                    $task->status_id = Task::STATUS_FAILED;
+                }   
+                $task->save(false);
+                $review = new Review();
+                $review->mark = $task->mark;
+                $review->comment = $task->comment;
+                $review->task_id = $id;
+                $review->user_id = Yii::$app->user->identity->id;
+                $review->save();
+                return $this->redirect(['index']);
+            }
+        } 
+        return $this->render('view',['task' => $id]);
+    }
+
+    public function actionResponse($id)
+    {
+        $task = Task::findOne($id);
+        if (!$task) {
+            throw new NotFoundHttpException("Задания с id $id не существует");
+        }
+        if($this->request->isPost) {
+            if ($task->load($this->request->post())) {
+                $response = new Response();
+                $response->cost = $task->cost;
+                $response->message = $task->comment;
+                $response->task_id = $id;
+                $response->user_id = Yii::$app->user->identity->id;
+                $response->save();
+                return $this->redirect(['index']);
+            }
+        } 
+        return $this->render('view',['task' => $id]);
+    }
+
+    public function actionAccept($id, $user)
+    {
+        $task = Task::findOne($id);
+        if (!$task) {
+            throw new NotFoundHttpException("Задания с id $id не существует");
+        }
+        $task->status_id = Task::STATUS_IN_WORK;
+        $task->executor_id = $user;
+        $task->save(false);
+        return $this->redirect(['index']);
+            
+    }
+
+    public function actionRefuse($id, $user)
+    {
+        $response = Response::findOne($user);
+        if (!$response) {
+            throw new NotFoundHttpException("Отклика с id $id не существует");
+        }
+        $response->canceled = 1;
+        $response->save(false);
+        return $this->refresh();
+    }
+
+    public function actionFailed($id)
+    {
+        $task = Task::findOne($id);
+        if (!$task) {
+            throw new NotFoundHttpException("Задания с id $id не существует");
+        }
+        $task->status_id = Task::STATUS_FAILED;
+        $task->save(false);
+        return $this->redirect(['index']);
     }
 }
