@@ -9,6 +9,14 @@ use yii\bootstrap5\ActiveForm;
 use frontend\widgets\RatingStarsWidget;
 
 $this->registerJsFile('@web/js/actions.js');
+if(
+    !empty($taskMap['latitude'])
+    && !empty($taskMap['longitude'])
+) {
+    $apiKey = Yii::$app->params['apiKeyGeocoder'];
+    $this->registerJsFile("https://api-maps.yandex.ru/2.1/?apikey={$apiKey}&lang=ru_RU");
+    $this->registerJsFile('@web/js/map.js');
+}
 ?>
 <main class="page-main">
     <div class="main-container page-container">
@@ -43,15 +51,26 @@ $this->registerJsFile('@web/js/actions.js');
                     <div class="content-view__location">
                         <h3 class="content-view__h3">Расположение</h3>
                         <div class="content-view__location-wrapper">
-                            <div class="content-view__map">
+                            <!-- <div class="content-view__map">
                                 <a href="#"><img src="/img/map.jpg" width="361" height="292"
                                                  alt="Москва, Новый арбат, 23 к. 1"></a>
-                            </div>
-                            <div class="content-view__address">
+                            </div> -->
+                            <!-- <div class="content-view__address">
                             <span class="address__town">Москва</span><br>
                             <span>Новый арбат, 23 к. 1</span>
                                 <p>Вход под арку, код домофона 1122</p>
-                            </div>
+                            </div> -->
+                            <?php if(!empty($taskMap['latitude']) && !empty($taskMap['longitude'])): ?>
+                                <div class="task-map">
+                                    <?= Html::hiddenInput('latitude', $taskMap['latitude'], ['id' => 'latitude']) ?>
+                                    <?= Html::hiddenInput('longitude', $taskMap['longitude'], ['id' => 'longitude']) ?>
+                                    <div id="map" class="map"></div>
+                                    <div class="address">
+                                        <p class="map-address"><?= $city; ?></p>
+                                        <p class="map-address"><?= $address; ?></p>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

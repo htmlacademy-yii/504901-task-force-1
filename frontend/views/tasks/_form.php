@@ -3,7 +3,10 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap5\ActiveForm;
 use yii\widgets\Pjax;
-
+// Подключить для продвинутого решения
+//$this->registerCssFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.02.min.css');
+//$this->registerJsFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js');
+//$this->registerJsFile('@web/js/autocomplit.js');
 ?>
     <main class="page-main">
         <div class="main-container page-container">
@@ -34,7 +37,8 @@ use yii\widgets\Pjax;
                         </div>
                         
                         <!-- <label for="13">Локация</label> -->
-                        <?= $form->field($model, 'address')->textInput(['maxlength' => true, 'class' => 'form-control input-navigation input-middle']) ?>
+                        <?= $form->field($model, 'address')->textInput(['maxlength' => true, 'class' => 'form-control input-navigation input-middle'])
+                        ->label('Локация') ?>
                         <!-- <input class="input-navigation input-middle input" id="13" type="search" name="q" placeholder="Санкт-Петербург, Калининский район"> -->
                         <span>Укажите адрес исполнения, если задание требует присутствия</span>
                         <?= $form->field($model, 'latitude')->hiddenInput()->label(false) ?>

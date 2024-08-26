@@ -2449,8 +2449,8 @@ footer {
     margin-top: 30px;
 }
 
-.account_checkbox {
-}
+/* .account_checkbox {
+} */
 
 .account_checkbox label {
     padding-top: 10px;
@@ -3112,4 +3112,23 @@ fieldset {
     border: 2px solid #c0c0c0;
 }
 
+.task-map {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.map {
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+    margin-bottom: 25px;
+    width: 361px;
+    height: 292px; }
+  
+.map-address {
+    margin-left: 128px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: #4d38f5;
+    font-size: 16px; }   
 /*# sourceMappingURL=style.css.map */

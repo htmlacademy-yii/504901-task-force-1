@@ -11,6 +11,7 @@ use frontend\models\Review;
 use frontend\models\Response;
 use frontend\models\File;
 use yii\web\UploadedFile;
+use frontend\api\Geocoder;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -89,12 +90,22 @@ class TasksController extends SecuredController
         ]);
     }
 
-    public function actionView($id)
+    public function actionView($id, $isAjax = false)
     {
         $task = Task::findOne($id);
         if (!$task) {
             throw new NotFoundHttpException("Задания с id $id не существует");
         }
+        $city = "";
+        $address = "";
+        if ($task->address) {
+            $addressParts = explode(",", $task->address);
+            $city = $addressParts[0];
+            if ($city !== $task->address) {
+                $address = str_replace($city.",", "", $task->address,);
+            }
+        }
+        $taskMap = $this->getTaskMapCoordinates($task);
         $responses = [];
         if (!Yii::$app->user->identity->isExecutor()) {
             foreach($task->responses as $response) {
@@ -105,7 +116,10 @@ class TasksController extends SecuredController
         } else {
             $responses = $task->responses;
         }
-        return $this->render('view',['task' => $task, 'responses' => $responses]);
+        if ($isAjax) {
+            return $this->renderPartial('view',['task' => $task, 'responses' => $responses, 'taskMap' => $taskMap, 'city' => $city, 'address' => $address]);
+        }
+        return $this->render('view',['task' => $task, 'responses' => $responses, 'taskMap' => $taskMap, 'city' => $city, 'address' => $address]);
     }
 
     public function changeActivity(){
@@ -126,6 +140,14 @@ class TasksController extends SecuredController
 
         if($this->request->isPost) {
             if ($model->load($this->request->post())) {
+                if ($model->address) {
+                    $api = new Geocoder();
+                    $response = $api->getCoordinates($model->address);
+                    if ($response) {
+                    $model->latitude = floatval($response[0]['latitude']);
+                    $model->longitude = floatval($response[0]['longitude']);
+                    }
+                }    
                 $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
                 if ($model->upload() && $model->save(false)) {
                     // file is uploaded successfully
@@ -238,5 +260,35 @@ class TasksController extends SecuredController
         $task->status_id = Task::STATUS_FAILED;
         $task->save(false);
         return $this->redirect(['index']);
+    }
+
+    //  для продвинутого решения
+    public function actionGetLocation()
+    {
+        if ($this->request->isAjax) {
+            $request = Yii::$app->request;
+            $query = $request->get('query');
+
+            $api = new Geocoder();
+            $response = $api->getCoordinates($query);
+
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            return $response;
+        }
+    }
+
+    protected function getTaskMapCoordinates(Task $task): array
+    {
+        $latitude = '';
+        $longitude = '';
+        if (!empty($task->latitude) && !empty($task->longitude)) {
+            $latitude = $task->latitude;
+            $longitude = $task->longitude;
+        } 
+        return [
+            'latitude' => $latitude,
+            'longitude' => $longitude
+        ];
     }
 }
